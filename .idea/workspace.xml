@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ab698545-f522-44f2-a910-466c9fc0aa02" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/postgresql_42_6_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Exercise2.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SQL/bootstrap_db.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SQL/clean_db.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SQL/fill_db.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/postgresql-42.6.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/FormUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/Menu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/Apartment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/Contract.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/DbConnectionManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/Estate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/EstateAgent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/House.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/Person.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/PurchaseContract.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/TenancyContract.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2Ny9sKoGZkXpHZmkIDEDGEDOxwW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="H:\Studium\SS_23\DIS\Exercises\Exercise2\lib" />
+      <recent name="H:\Studium\SS_23\DIS\Exercises\Exercise2" />
+      <recent name="H:\Studium\SS_23\DIS\Exercises\Exercise2\src" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="de.dis.Main" />
+      <module name="Exercise2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="de.dis.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="docker-compose.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ab698545-f522-44f2-a910-466c9fc0aa02" name="Changes" comment="" />
+      <created>1680625661539</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1680625661539</updated>
+    </task>
+    <servers />
+  </component>
+</project>
