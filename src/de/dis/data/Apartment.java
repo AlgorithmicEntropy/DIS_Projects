@@ -1,7 +1,6 @@
 package de.dis.data;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -57,7 +56,7 @@ public class Apartment extends Estate {
         this.rooms = rooms;
     }
 
-    public boolean hasBalcony() {
+    public boolean getBalcony() {
         return balcony;
     }
 
@@ -65,7 +64,7 @@ public class Apartment extends Estate {
         this.balcony = balcony;
     }
 
-    public boolean hasBuiltInKitchen() {
+    public boolean getBuiltInKitchen() {
         return builtInKitchen;
     }
 
@@ -75,14 +74,15 @@ public class Apartment extends Estate {
 
     public void save() {
         super.save();
-        try (Connection conn = DbConnectionManager.getInstance().getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO apartments (estate_id, floor, rent, rooms, balcony, built_in_kitchen) VALUES (?, ?, ?, ?, ?, ?)");
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO apartments (id, floor, rent, rooms, balcony, built_in_kitchen) VALUES (?, ?, ?, ?, ?, ?)");
             stmt.setInt(1, getId());
-            stmt.setInt(2, floor);
-            stmt.setDouble(3, rent);
-            stmt.setInt(4, rooms);
-            stmt.setBoolean(5, balcony);
-            stmt.setBoolean(6, builtInKitchen);
+            stmt.setInt(2, getFloor());
+            stmt.setDouble(3, getRent());
+            stmt.setInt(4, getRooms());
+            stmt.setBoolean(5, getBalcony());
+            stmt.setBoolean(6, getBuiltInKitchen());
             stmt.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();

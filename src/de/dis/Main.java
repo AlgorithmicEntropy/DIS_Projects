@@ -1,5 +1,7 @@
 package de.dis;
 
+import de.dis.data.Apartment;
+import de.dis.data.Estate;
 import de.dis.data.EstateAgent;
 
 /**
@@ -10,7 +12,9 @@ public class Main {
 	 * Startet die Anwendung
 	 */
 	public static void main(String[] args) {
-		showMainMenu();
+		// showMainMenu();
+		Apartment apartment = new Apartment("hamburg", 22782, "testWeg", "2", 90, 2, 900, 3, false, true);
+		apartment.save();
 	}
 	
 	/**

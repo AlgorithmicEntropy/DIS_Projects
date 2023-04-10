@@ -77,45 +77,56 @@ public class Estate {
         this.squareArea = squareArea;
     }
 
-    public static Estate load(Connection conn, int id) throws SQLException {
-        Estate estate = null;
-        PreparedStatement stmt = conn.prepareStatement("SELECT city, postal_code, street, street_number, square_area FROM estates WHERE id = ?");
-        stmt.setInt(1, id);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            String city = rs.getString("city");
-            int postalCode = rs.getInt("postal_code");
-            String street = rs.getString("street");
-            String streetNumber = rs.getString("street_number");
-            double squareArea = rs.getDouble("square_area");
-            estate = new Estate(id, city, postalCode, street, streetNumber, squareArea);
+    public static Estate load(int id) {
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            Estate estate = null;
+            PreparedStatement stmt = con.prepareStatement("SELECT city, postal_code, street, street_number, square_area FROM estates WHERE id = ?");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String city = rs.getString("city");
+                int postalCode = rs.getInt("postal_code");
+                String street = rs.getString("street");
+                String streetNumber = rs.getString("street_number");
+                double squareArea = rs.getDouble("square_area");
+                estate = new Estate(id, city, postalCode, street, streetNumber, squareArea);
+            }
+            rs.close();
+            stmt.close();
+            return estate;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
         }
-        rs.close();
-        stmt.close();
-        return estate;
     }
 
     public void save() {
-        try (Connection conn = DbConnectionManager.getInstance().getConnection()) {
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
             PreparedStatement stmt;
             if (getId() == -1) {
-                stmt = conn.prepareStatement("INSERT INTO estates (city, postal_code, street, street_number, square_area) VALUES (?, ?, ?, ?, ?, ?)");
-                stmt.setInt(1, id);
-                stmt.setString(2, city);
-                stmt.setInt(3, postalCode);
-                stmt.setString(4, street);
-                stmt.setString(5, streetNumber);
-                stmt.setDouble(6, squareArea);
+                stmt = con.prepareStatement("INSERT INTO estates (city, postal_code, street, street_number, square_area) VALUES (?, ?, ?, ?, ?) RETURNING id");
+                stmt.setString(1, city);
+                stmt.setInt(2, postalCode);
+                stmt.setString(3, street);
+                stmt.setString(4, streetNumber);
+                stmt.setDouble(5, squareArea);
+                var rs = stmt.executeQuery();
+                if (rs.next()) {
+                    id = rs.getInt(1);
+                    setId(id);
+                }
             } else {
-                stmt = conn.prepareStatement("UPDATE estates SET city = ?, postal_code = ?, street = ?, street_number = ?, square_area = ? WHERE id = ?");
+                stmt = con.prepareStatement("UPDATE estates SET city = ?, postal_code = ?, street = ?, street_number = ?, square_area = ? WHERE id = ?");
                 stmt.setString(1, city);
                 stmt.setInt(2, postalCode);
                 stmt.setString(3, street);
                 stmt.setString(4, streetNumber);
                 stmt.setDouble(5, squareArea);
                 stmt.setInt(6, id);
+                stmt.executeUpdate();
             }
-            stmt.executeUpdate();
 
         } catch (SQLException ex) {
             ex.printStackTrace();

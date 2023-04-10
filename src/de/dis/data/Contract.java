@@ -42,8 +42,9 @@ public class Contract {
     }
 
     public void save() {
-        try (Connection conn = DbConnectionManager.getInstance().getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO contracts (contract_number, date, place) VALUES (?, ?, ?)");
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO contracts (contract_number, date, place) VALUES (?, ?, ?)");
             stmt.setInt(1, contractNumber);
             stmt.setDate(2, new java.sql.Date(date.getTime()));
             stmt.setString(3, place);
