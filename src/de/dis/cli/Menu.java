@@ -1,4 +1,4 @@
-package de.dis;
+package de.dis.cli;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,7 +79,20 @@ public class Menu {
 				selection = -1;
 			} 
 		}
+
+		// clear console
+		this.clrscr();
 		
 		return returnValues.get(selection-1);
+	}
+
+	public void clear() {
+		this.labels.clear();
+		this.returnValues.clear();
+	}
+
+	private void clrscr(){
+		for(int i = 0; i < 50; i++)
+			System.out.print("\n"); // Prints a newline
 	}
 }
