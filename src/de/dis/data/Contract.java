@@ -15,12 +15,6 @@ public class Contract {
     private Date date;
     private String place;
 
-    public Contract(int contractNumber, Date date, String place) {
-        this.contractNumber = contractNumber;
-        this.date = date;
-        this.place = place;
-    }
-
     // getters and setters
     public int getContractNumber() {
         return contractNumber;
@@ -67,6 +61,17 @@ public class Contract {
 
     public List<String> getDBFields() {
         return List.of(CONTRACT_NUMBER, DATE, PLACE);
+    }
+
+    public static Contract load() {
+        // TODO implement me
+        return new Contract();
+    }
+
+    @Override
+    public String toString() {
+        // TODO implement me
+        return super.toString();
     }
 }
 

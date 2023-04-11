@@ -3,6 +3,7 @@ package de.dis.data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,14 +14,15 @@ public class TenancyContract extends Contract {
     public static final String DURATION = "duration";
     public static final String ADDITIONAL_COSTS = "additional_costs";
     private Date startDate;
-    private int duration;
+    private Duration duration;
     private double additionalCosts;
 
-    public TenancyContract(int contractNumber, Date date, String place, Date startDate, int duration, double additionalCosts) {
-        super(contractNumber, date, place);
-        this.startDate = startDate;
-        this.duration = duration;
-        this.additionalCosts = additionalCosts;
+    public TenancyContract() {}
+
+    public TenancyContract(Contract contract) {
+        setContractNumber(contract.getContractNumber());
+        setDate(contract.getDate());
+        setPlace(contract.getPlace());
     }
 
     // getters and setters
@@ -32,11 +34,11 @@ public class TenancyContract extends Contract {
         this.startDate = startDate;
     }
 
-    public int getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
@@ -53,7 +55,7 @@ public class TenancyContract extends Contract {
         super.setValues(stmt);
         List<String> columns = getDBFields();
         stmt.setDate(columns.indexOf(START_DATE) + 1, new java.sql.Date(startDate.getTime()));
-        stmt.setInt(columns.indexOf(DURATION) + 1, duration);
+        stmt.setObject(columns.indexOf(DURATION) + 1, duration);
         stmt.setDouble(columns.indexOf(ADDITIONAL_COSTS) + 1, additionalCosts);
     }
 
@@ -63,6 +65,22 @@ public class TenancyContract extends Contract {
                 .concat(super.getDBFields().stream(),
                         List.of(START_DATE, DURATION, ADDITIONAL_COSTS).stream())
                 .collect(Collectors.toList());
+    }
+
+    public int Save() {
+        // TODO implement me
+        return -1;
+    }
+
+    public static TenancyContract load(int id) {
+        // TODO implement me
+        return new TenancyContract();
+    }
+
+    @Override
+    public String toString() {
+        // TODO implement me
+        return super.toString();
     }
 }
 

@@ -1,6 +1,9 @@
 package de.dis.data;
 
+import de.dis.cli.Session;
+
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,30 +13,13 @@ public class Estate {
     public static final java.lang.String STREET = "street";
     public static final java.lang.String STREET_NUMBER = "street_number";
     public static final java.lang.String SQUARE_AREA = "square_area";
-    private int id;
+    private int id = -1;
+    private int agentId = -1;
     private String city;
     private int postalCode;
     private String street;
     private String streetNumber;
     private double squareArea;
-
-    public Estate(int id, String city, int postalCode, String street, String streetNumber, double squareArea) {
-        this.id = id;
-        this.city = city;
-        this.postalCode = postalCode;
-        this.street = street;
-        this.streetNumber = streetNumber;
-        this.squareArea = squareArea;
-    }
-
-    public Estate(String city, int postalCode, String street, String streetNumber, double squareArea) {
-        this.id = -1;
-        this.city = city;
-        this.postalCode = postalCode;
-        this.street = street;
-        this.streetNumber = streetNumber;
-        this.squareArea = squareArea;
-    }
 
     // getters and setters
     public int getId() {
@@ -84,6 +70,14 @@ public class Estate {
         this.squareArea = squareArea;
     }
 
+    public int getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(int agentId) {
+        this.agentId = agentId;
+    }
+
     public static Estate load(int id) {
         try {
             Connection con = DbConnectionManager.getInstance().getConnection();
@@ -97,7 +91,13 @@ public class Estate {
                 String street = rs.getString("street");
                 String streetNumber = rs.getString("street_number");
                 double squareArea = rs.getDouble("square_area");
-                estate = new Estate(id, city, postalCode, street, streetNumber, squareArea);
+                estate = new Estate();
+                estate.setId(id);
+                estate.setCity(city);
+                estate.setPostalCode(postalCode);
+                estate.setStreet(street);
+                estate.setStreetNumber(streetNumber);
+                estate.setSquareArea(squareArea);
             }
             rs.close();
             stmt.close();
@@ -109,11 +109,12 @@ public class Estate {
     }
 
     public void save() {
+        // TODO fix me
         try {
             Connection con = DbConnectionManager.getInstance().getConnection();
             PreparedStatement stmt;
             if (getId() == -1) {
-                stmt = con.prepareStatement("INSERT INTO estates (" + getDBFields() + ") VALUES ("
+                stmt = con.prepareStatement("INSERT INTO estates (" + String.join(",", getDBFields()) + ") VALUES ("
                         + getDBFields().stream().map(s -> "?").collect(Collectors.joining(", ")) + ") RETURNING id");
                 setValues(stmt);
 
@@ -126,7 +127,7 @@ public class Estate {
                 java.lang.String fieldsToUpdate = getDBFields().stream().map(s -> s + " = ? ").collect(Collectors.joining(", "));
                 stmt = con.prepareStatement("UPDATE estates SET " + fieldsToUpdate + " WHERE id = ?");
                 setValues(stmt);
-                stmt.setInt(getDBFields().size() + 2, id);
+                stmt.setInt(getDBFields().size() + 1, id);
                 stmt.executeUpdate();
             }
 
@@ -147,6 +148,40 @@ public class Estate {
 
     public List<String> getDBFields() {
         return List.of(CITY, POSTAL_CODE, STREET, STREET_NUMBER, SQUARE_AREA);
+    }
+
+    public void delete() {
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            String sql = "DELETE FROM estates WHERE id = ?";
+            var stm = con.prepareStatement(sql);
+            stm.setInt(1, this.id);
+            stm.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static List<Estate> loadAll() {
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            String selectSQL = "SELECT id FROM estates WHERE agent_id = ?";
+            PreparedStatement pstmt = con.prepareStatement(selectSQL);
+            pstmt.setInt(1, Session.getInstance().getAgent().getId());
+            ResultSet rs = pstmt.executeQuery();
+            var estates = new ArrayList<Estate>();
+            while (rs.next()) {
+                var id = rs.getInt(1);
+                estates.add(Estate.load(id));
+            }
+            rs.close();
+            pstmt.close();
+            return estates;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }
 

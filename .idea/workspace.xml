@@ -4,9 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab698545-f522-44f2-a910-466c9fc0aa02" name="Changes" comment="Optimized Insert for Estate and its subclasses">
+    <list default="true" id="ab698545-f522-44f2-a910-466c9fc0aa02" name="Changes" comment="Added menus for root, agent and main menu">
+      <change afterPath="$PROJECT_DIR$/src/de/dis/cli/EstateMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/Rents.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/de/dis/data/Sells.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SQL/clean_db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/clean_db.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/cli/AbstractMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/cli/AbstractMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/cli/AgentMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/cli/AgentMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/cli/FormUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/cli/FormUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/cli/RootMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/cli/RootMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Apartment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Apartment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Contract.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Contract.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Estate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Estate.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/de/dis/data/House.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/House.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Person.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/data/PurchaseContract.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/PurchaseContract.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/data/TenancyContract.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/TenancyContract.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +93,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>
@@ -105,7 +123,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681225806492</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Added menus for root, agent and main menu">
+      <created>1681237321751</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1681237321751</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -122,6 +147,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added files" />
     <MESSAGE value="Optimized Insert for Estate and its subclasses" />
-    <option name="LAST_COMMIT_MESSAGE" value="Optimized Insert for Estate and its subclasses" />
+    <MESSAGE value="Added menus for root, agent and main menu" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added menus for root, agent and main menu" />
   </component>
 </project>

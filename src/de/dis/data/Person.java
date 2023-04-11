@@ -2,7 +2,10 @@ package de.dis.data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Person {
 
@@ -10,6 +13,26 @@ public class Person {
     private String firstName;
     private String name;
     private String address;
+
+    public static List<Person> getAll() {
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            String selectSQL = "SELECT id FROM persons";
+            PreparedStatement pstmt = con.prepareStatement(selectSQL);
+            ResultSet rs = pstmt.executeQuery();
+            var people = new ArrayList<Person>();
+            while (rs.next()) {
+                var id = rs.getInt(1);
+                people.add(Person.load(id));
+            }
+            rs.close();
+            pstmt.close();
+            return people;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     // getters and setters
     public String getFirstName() {
@@ -70,7 +93,7 @@ public class Person {
         Person person = null;
         try {
             var con = DbConnectionManager.getInstance().getConnection();
-            var stmt = con.prepareStatement("SELECT * FROM people WHERE id = ?");
+            var stmt = con.prepareStatement("SELECT * FROM persons WHERE id = ?");
             stmt.setInt(1, id);
             var rs = stmt.executeQuery();
 

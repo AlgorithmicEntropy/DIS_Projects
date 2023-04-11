@@ -14,10 +14,12 @@ public class PurchaseContract extends Contract {
     private int numberOfInstallments;
     private double interestRate;
 
-    public PurchaseContract(int contractNumber, Date date, String place, int numberOfInstallments, double interestRate) {
-        super(contractNumber, date, place);
-        this.numberOfInstallments = numberOfInstallments;
-        this.interestRate = interestRate;
+    public PurchaseContract() {}
+
+    public PurchaseContract(Contract contract) {
+        setContractNumber(contract.getContractNumber());
+        setDate(contract.getDate());
+        setPlace(contract.getPlace());
     }
 
     // getters and setters
@@ -52,5 +54,20 @@ public class PurchaseContract extends Contract {
                 .concat(super.getDBFields().stream(),
                         List.of(NUM_INSTALLMENTS, INTEREST_RATE).stream())
                 .collect(Collectors.toList());
+    }
+
+    public void Save() {
+        // TODO implement me
+    }
+
+    public static PurchaseContract load(int id) {
+        // TODO implement me
+        return new PurchaseContract();
+    }
+
+    @Override
+    public String toString() {
+        // TODO implement me
+        return super.toString();
     }
 }
