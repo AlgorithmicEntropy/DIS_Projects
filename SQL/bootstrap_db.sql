@@ -56,12 +56,12 @@ CREATE TABLE IF NOT EXISTS tenancy_contracts (
 
 CREATE TABLE IF NOT EXISTS rents (
     apartment_id INTEGER REFERENCES estates(id),
-    contract_id INTEGER REFERENCES contracts(contract_number),
+    contract_id INTEGER NOT NULL REFERENCES contracts(contract_number),
     tenant_id INTEGER REFERENCES persons(id)
 );
 
 CREATE TABLE IF NOT EXISTS sells (
     house_id INTEGER REFERENCES estates(id),
-    contract_id INTEGER REFERENCES contracts(contract_number),
+    contract_id INTEGER NOT NULL REFERENCES contracts(contract_number),
     seller INTEGER REFERENCES persons(id)
 );

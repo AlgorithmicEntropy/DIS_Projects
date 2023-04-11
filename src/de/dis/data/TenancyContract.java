@@ -4,8 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TenancyContract extends Contract {
+    public static final String START_DATE = "start_date";
+    public static final String DURATION = "duration";
+    public static final String ADDITIONAL_COSTS = "additional_costs";
     private Date startDate;
     private int duration;
     private double additionalCosts;
@@ -42,18 +48,21 @@ public class TenancyContract extends Contract {
         this.additionalCosts = additionalCosts;
     }
 
-    public void save() {
-        super.save();
-        try (Connection conn = DbConnectionManager.getInstance().getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO tenancy_contracts (contract_id, start_date, duration, additional_costs) VALUES (?, ?, ?, ?)");
-            stmt.setInt(1, getContractNumber());
-            stmt.setDate(2, new java.sql.Date(startDate.getTime()));
-            stmt.setInt(3, duration);
-            stmt.setDouble(4, additionalCosts);
-            stmt.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    @Override
+    protected void setValues(PreparedStatement stmt) throws SQLException {
+        super.setValues(stmt);
+        List<String> columns = getDBFields();
+        stmt.setDate(columns.indexOf(START_DATE) + 1, new java.sql.Date(startDate.getTime()));
+        stmt.setInt(columns.indexOf(DURATION) + 1, duration);
+        stmt.setDouble(columns.indexOf(ADDITIONAL_COSTS) + 1, additionalCosts);
+    }
+
+    @Override
+    public List<String> getDBFields() {
+        return Stream
+                .concat(super.getDBFields().stream(),
+                        List.of(START_DATE, DURATION, ADDITIONAL_COSTS).stream())
+                .collect(Collectors.toList());
     }
 }
 

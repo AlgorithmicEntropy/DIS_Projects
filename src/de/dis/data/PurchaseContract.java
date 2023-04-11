@@ -4,8 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PurchaseContract extends Contract {
+    public static final String NUM_INSTALLMENTS = "num_installments";
+    public static final String INTEREST_RATE = "interest_rate";
     private int numberOfInstallments;
     private double interestRate;
 
@@ -32,16 +37,20 @@ public class PurchaseContract extends Contract {
         this.interestRate = interestRate;
     }
 
-    public void save() {
-        super.save();
-        try (Connection conn = DbConnectionManager.getInstance().getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO purchase_contracts (contract_id, num_installments, interest_rate) VALUES (?, ?, ?)");
-            stmt.setInt(1, getContractNumber());
-            stmt.setInt(2, numberOfInstallments);
-            stmt.setDouble(3, interestRate);
-            stmt.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+
+    @Override
+    protected void setValues(PreparedStatement stmt) throws SQLException {
+        super.setValues(stmt);
+        List<String> columns = getDBFields();
+        stmt.setInt(columns.indexOf(NUM_INSTALLMENTS) + 1, numberOfInstallments);
+        stmt.setDouble(columns.indexOf(INTEREST_RATE) + 1, interestRate);
+    }
+
+    @Override
+    public List<String> getDBFields() {
+        return Stream
+                .concat(super.getDBFields().stream(),
+                        List.of(NUM_INSTALLMENTS, INTEREST_RATE).stream())
+                .collect(Collectors.toList());
     }
 }
