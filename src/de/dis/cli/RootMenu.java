@@ -87,7 +87,7 @@ public class RootMenu extends AbstractMenu {
 
     private EstateAgent showAgentMenu() {
         var agents = EstateAgent.getAll();
-        var menu = new Menu("Select a agent");
+        var menu = new Menu("Select an agent");
         for (int i = 0; i < agents.size(); i++) {
             menu.addEntry(agents.get(i).getName(), i);
         }

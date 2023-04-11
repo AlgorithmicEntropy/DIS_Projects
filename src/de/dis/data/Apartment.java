@@ -1,8 +1,13 @@
 package de.dis.data;
 
+import de.dis.cli.Session;
+import jdk.jshell.spi.ExecutionControl;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,24 +24,15 @@ public class Apartment extends Estate {
     private boolean balcony;
     private boolean builtInKitchen;
 
-    public Apartment(int id, String city, int postalCode, String street, String streetNumber, double squareArea,
-                     int floor, double rent, int rooms, boolean balcony, boolean builtInKitchen) {
-        super(id, city, postalCode, street, streetNumber, squareArea);
-        this.floor = floor;
-        this.rent = rent;
-        this.rooms = rooms;
-        this.balcony = balcony;
-        this.builtInKitchen = builtInKitchen;
-    }
+    public Apartment() {}
 
-    public Apartment(String city, int postalCode, String street, String streetNumber, double squareArea,
-                     int floor, double rent, int rooms, boolean balcony, boolean builtInKitchen) {
-        super(city, postalCode, street, streetNumber, squareArea);
-        this.floor = floor;
-        this.rent = rent;
-        this.rooms = rooms;
-        this.balcony = balcony;
-        this.builtInKitchen = builtInKitchen;
+    public Apartment(Estate estate) {
+        setId(estate.getId());
+        setCity(estate.getCity());
+        setPostalCode(estate.getPostalCode());
+        setStreet(estate.getStreet());
+        setStreetNumber(estate.getStreetNumber());
+        setSquareArea(estate.getSquareArea());
     }
 
     // getters and setters
@@ -97,5 +93,64 @@ public class Apartment extends Estate {
                 .concat(super.getDBFields().stream(),
                         List.of(FLOOR, RENT, ROOMS, BALCONY, BUILT_IN_KITCHEN).stream())
                 .collect(Collectors.toList());
+    }
+
+    public static Apartment load(int id) {
+        try {
+            var estate = Estate.load(id);
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            String selectSQL = "SELECT floor, rent, rooms, balcony, built_in_kitchen FROM apartments WHERE id = ?";
+            PreparedStatement pstmt = con.prepareStatement(selectSQL);
+            pstmt.setInt(1, id);
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                var apartment = new Apartment(estate);
+                apartment.setFloor(rs.getInt(1));
+                apartment.setRent(rs.getDouble(2));
+                apartment.setRooms(rs.getInt(3));
+                apartment.setBalcony(rs.getBoolean(4));
+                apartment.setBuiltInKitchen(rs.getBoolean(5));
+                rs.close();
+                pstmt.close();
+                return apartment;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public static List<Estate> loadAll() {
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            String selectSQL = "SELECT id FROM apartments WHERE agent_id = ?";
+            PreparedStatement pstmt = con.prepareStatement(selectSQL);
+            pstmt.setInt(1, Session.getInstance().getAgent().getId());
+            ResultSet rs = pstmt.executeQuery();
+            var apartments = new ArrayList<Estate>();
+            while (rs.next()) {
+                var id = rs.getInt(1);
+                apartments.add(Apartment.load(id));
+            }
+            rs.close();
+            pstmt.close();
+            return apartments;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        var builder = new StringBuilder();
+        builder.append(getCity());
+        builder.append(" ");
+        builder.append(getStreet());
+        builder.append(" ");
+        builder.append(getStreetNumber());
+        return builder.toString();
     }
 }
