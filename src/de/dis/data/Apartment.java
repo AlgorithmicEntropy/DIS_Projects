@@ -3,8 +3,16 @@ package de.dis.data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Apartment extends Estate {
+    public static final java.lang.String FLOOR = "floor";
+    public static final java.lang.String RENT = "rent";
+    public static final java.lang.String ROOMS = "rooms";
+    public static final java.lang.String BALCONY = "balcony";
+    public static final java.lang.String BUILT_IN_KITCHEN = "built_in_kitchen";
     private int floor;
     private double rent;
     private int rooms;
@@ -72,20 +80,22 @@ public class Apartment extends Estate {
         this.builtInKitchen = builtInKitchen;
     }
 
-    public void save() {
-        super.save();
-        try {
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO apartments (id, floor, rent, rooms, balcony, built_in_kitchen) VALUES (?, ?, ?, ?, ?, ?)");
-            stmt.setInt(1, getId());
-            stmt.setInt(2, getFloor());
-            stmt.setDouble(3, getRent());
-            stmt.setInt(4, getRooms());
-            stmt.setBoolean(5, getBalcony());
-            stmt.setBoolean(6, getBuiltInKitchen());
-            stmt.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    @Override
+    protected void setValues(PreparedStatement stmt) throws SQLException {
+        super.setValues(stmt);
+        List<String> columns = getDBFields();
+        stmt.setInt(columns.indexOf(FLOOR) +1, getFloor());
+        stmt.setDouble(columns.indexOf(RENT) +1, getRent());
+        stmt.setInt(columns.indexOf(ROOMS) +1, getRooms());
+        stmt.setBoolean(columns.indexOf(BALCONY) +1, getBalcony());
+        stmt.setBoolean(columns.indexOf(BUILT_IN_KITCHEN) +1, getBuiltInKitchen());
+    }
+
+    @Override
+    public List<String> getDBFields() {
+        return Stream
+                .concat(super.getDBFields().stream(),
+                        List.of(FLOOR, RENT, ROOMS, BALCONY, BUILT_IN_KITCHEN).stream())
+                .collect(Collectors.toList());
     }
 }
