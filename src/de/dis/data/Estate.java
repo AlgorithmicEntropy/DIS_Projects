@@ -1,8 +1,15 @@
 package de.dis.data;
 
 import java.sql.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Estate {
+    public static final java.lang.String CITY = "city";
+    public static final java.lang.String POSTAL_CODE = "postal_code";
+    public static final java.lang.String STREET = "street";
+    public static final java.lang.String STREET_NUMBER = "street_number";
+    public static final java.lang.String SQUARE_AREA = "square_area";
     private int id;
     private String city;
     private int postalCode;
@@ -106,25 +113,20 @@ public class Estate {
             Connection con = DbConnectionManager.getInstance().getConnection();
             PreparedStatement stmt;
             if (getId() == -1) {
-                stmt = con.prepareStatement("INSERT INTO estates (city, postal_code, street, street_number, square_area) VALUES (?, ?, ?, ?, ?) RETURNING id");
-                stmt.setString(1, city);
-                stmt.setInt(2, postalCode);
-                stmt.setString(3, street);
-                stmt.setString(4, streetNumber);
-                stmt.setDouble(5, squareArea);
+                stmt = con.prepareStatement("INSERT INTO estates (" + getDBFields() + ") VALUES ("
+                        + getDBFields().stream().map(s -> "?").collect(Collectors.joining(", ")) + ") RETURNING id");
+                setValues(stmt);
+
                 var rs = stmt.executeQuery();
                 if (rs.next()) {
                     id = rs.getInt(1);
                     setId(id);
                 }
             } else {
-                stmt = con.prepareStatement("UPDATE estates SET city = ?, postal_code = ?, street = ?, street_number = ?, square_area = ? WHERE id = ?");
-                stmt.setString(1, city);
-                stmt.setInt(2, postalCode);
-                stmt.setString(3, street);
-                stmt.setString(4, streetNumber);
-                stmt.setDouble(5, squareArea);
-                stmt.setInt(6, id);
+                java.lang.String fieldsToUpdate = getDBFields().stream().map(s -> s + " = ? ").collect(Collectors.joining(", "));
+                stmt = con.prepareStatement("UPDATE estates SET " + fieldsToUpdate + " WHERE id = ?");
+                setValues(stmt);
+                stmt.setInt(getDBFields().size() + 2, id);
                 stmt.executeUpdate();
             }
 
@@ -132,6 +134,19 @@ public class Estate {
             ex.printStackTrace();
         }
 
+    }
+
+    protected void setValues(PreparedStatement stmt) throws SQLException {
+        List<String> columns = getDBFields();
+        stmt.setString(columns.indexOf(CITY) + 1, city);
+        stmt.setInt(columns.indexOf(POSTAL_CODE) + 1, postalCode);
+        stmt.setString(columns.indexOf(STREET) + 1, street);
+        stmt.setString(columns.indexOf(STREET_NUMBER) + 1, streetNumber);
+        stmt.setDouble(columns.indexOf(SQUARE_AREA) + 1, squareArea);
+    }
+
+    public List<String> getDBFields() {
+        return List.of(CITY, POSTAL_CODE, STREET, STREET_NUMBER, SQUARE_AREA);
     }
 }
 

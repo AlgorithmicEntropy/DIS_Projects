@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class House extends Estate {
+    public static final java.lang.String FLOORS = "floors";
+    public static final java.lang.String PRICE = "price";
+    public static final java.lang.String GARDEN = "garden";
     private int floors;
     private double price;
     private boolean garden;
@@ -42,18 +45,21 @@ public class House extends Estate {
         this.garden = garden;
     }
 
-    public void save() {
-        super.save();
-        try (Connection conn = DbConnectionManager.getInstance().getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO houses (estate_id, floors, price, garden) VALUES (?, ?, ?, ?)");
-            stmt.setInt(1, getId());
-            stmt.setInt(2, floors);
-            stmt.setDouble(3, price);
-            stmt.setBoolean(4, garden);
-            stmt.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    @Override
+    protected void setValues(PreparedStatement stmt) throws SQLException {
+        super.setValues(stmt);
+        List<String> columns = getDBFields();
+        stmt.setInt(columns.indexOf(FLOORS) +1, floors);
+        stmt.setDouble(columns.indexOf(PRICE) +1, price);
+        stmt.setBoolean(columns.indexOf(GARDEN) +1, garden);
+    }
+
+    @Override
+    public List<String> getDBFields() {
+        return Stream
+                .concat(super.getDBFields().stream(),
+                        List.of(FLOORS, PRICE, GARDEN).stream())
+                .collect(Collectors.toList());
     }
 }
 

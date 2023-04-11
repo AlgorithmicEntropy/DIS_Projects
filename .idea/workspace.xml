@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ab698545-f522-44f2-a910-466c9fc0aa02" name="Changes" comment="Added files">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/de/dis/data/Apartment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Apartment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Contract.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Contract.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/de/dis/data/Estate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Estate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/dis/data/House.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/House.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +24,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/de/dis/data/Estate.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProjectId" id="2Ny9sKoGZkXpHZmkIDEDGEDOxwW" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -74,7 +76,6 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
-        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>
@@ -100,16 +101,5 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added files" />
     <option name="LAST_COMMIT_MESSAGE" value="Added files" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/de/dis/data/Apartment.java</url>
-          <line>85</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
