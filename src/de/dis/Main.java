@@ -1,5 +1,6 @@
 package de.dis;
 
+import de.dis.cli.AgentMenu;
 import de.dis.data.Apartment;
 import de.dis.data.Estate;
 import de.dis.data.EstateAgent;
@@ -8,13 +9,14 @@ import de.dis.data.EstateAgent;
  * Hauptklasse
  */
 public class Main {
+
+	private AgentMenu agentMenu = new AgentMenu();
+
 	/**
 	 * Startet die Anwendung
 	 */
 	public static void main(String[] args) {
-		// showMainMenu();
-		Apartment apartment = new Apartment("hamburg", 22782, "testWeg", "2", 90, 2, 900, 3, false, true);
-		apartment.save();
+		showMainMenu();
 	}
 	
 	/**

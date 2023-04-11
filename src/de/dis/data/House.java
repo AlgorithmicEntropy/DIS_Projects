@@ -3,6 +3,9 @@ package de.dis.data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class House extends Estate {
     private int floors;
