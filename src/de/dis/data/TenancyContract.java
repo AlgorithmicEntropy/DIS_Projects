@@ -80,6 +80,7 @@ public class TenancyContract extends Contract {
 
     @Override
     protected void loadValues(ResultSet rs) throws SQLException {
+        super.loadValues(rs);
         this.setStartDate(rs.getDate(START_DATE));
         this.setDuration(rs.getObject(DURATION, Duration.class));
         this.setAdditionalCosts(rs.getDouble(ADDITIONAL_COSTS));

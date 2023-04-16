@@ -7,7 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Person {
+public class Person extends AbstractDataObject {
+    private static final String ID = "id";
+    private static final String FIRST_NAME= "first_name";
+    private static final String NAME = "name";
+    private static final String ADDRESS = "address";
 
     private int id;
     private String firstName;
@@ -68,49 +72,12 @@ public class Person {
     }
 
     public void save() {
-        try {
-            Connection conn = DbConnectionManager.getInstance().getConnection();
-            if (getId() == -1) {
-                PreparedStatement stmt = conn.prepareStatement("INSERT INTO people (first_name, name, address) VALUES (?, ?, ?)");
-                stmt.setString(1, firstName);
-                stmt.setString(2, name);
-                stmt.setString(3, address);
-                stmt.executeUpdate();
-            } else {
-                PreparedStatement stmt = conn.prepareStatement("UPDATE people SET first_name = ?, name = ?, address = ? WHERE id = ?");
-                stmt.setString(1, firstName);
-                stmt.setString(2, name);
-                stmt.setString(3, address);
-                stmt.setInt(4, id);
-                stmt.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        insertOrUpdate();
     }
 
     public static Person load(int id) {
-        Person person = null;
-        try {
-            var con = DbConnectionManager.getInstance().getConnection();
-            var stmt = con.prepareStatement("SELECT * FROM persons WHERE id = ?");
-            stmt.setInt(1, id);
-            var rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String firstName = rs.getString("first_name");
-                String name = rs.getString("name");
-                String address = rs.getString("address");
-                person = new Person();
-                person.setId(id);
-                person.setName(name);
-                person.setFirstName(firstName);
-                person.setAddress(address);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return person;
+        Person person = new Person();
+        return loadInternal(id, person);
     }
 
     @Override
@@ -121,6 +88,46 @@ public class Person {
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 '}';
+    }
+
+    @Override
+    List<String> getDBFields() {
+        return List.of(FIRST_NAME, NAME, ADDRESS);
+    }
+
+    @Override
+    String getTableName() {
+        return "persons";
+    }
+
+    @Override
+    String getIdName() {
+        return ID;
+    }
+
+    @Override
+    int getIdValue() {
+        return getId();
+    }
+
+    @Override
+    void setIdValue(int newId) {
+        setId(newId);
+    }
+
+    @Override
+    void setValues(PreparedStatement stmt) throws SQLException {
+        List<String> dbFields = getDBFields();
+        stmt.setString(dbFields.indexOf(FIRST_NAME) + 1, firstName);
+        stmt.setString(dbFields.indexOf(NAME) + 1, name);
+        stmt.setString(dbFields.indexOf(ADDRESS) + 1, address);
+    }
+
+    @Override
+    void loadValues(ResultSet rs) throws SQLException {
+        this.setFirstName(rs.getString(FIRST_NAME));
+        this.setName(rs.getString(NAME));
+        this.setAddress(rs.getString(ADDRESS));
     }
 }
 

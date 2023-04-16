@@ -58,6 +58,11 @@ public class PurchaseContract extends Contract {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public String getTableName() {
+        return "purchase_contracts";
+    }
+
     public static PurchaseContract load(int contractNumber) {
         PurchaseContract contract = new PurchaseContract();
         return (PurchaseContract) loadInternal(contractNumber, contract);
@@ -65,6 +70,7 @@ public class PurchaseContract extends Contract {
 
     @Override
     protected void loadValues(ResultSet rs) throws SQLException {
+        super.loadValues(rs);
         this.setNumberOfInstallments(rs.getInt(NUM_INSTALLMENTS));
         this.setInterestRate(rs.getDouble(INTEREST_RATE));
     }

@@ -96,30 +96,24 @@ public class Apartment extends Estate {
                 .collect(Collectors.toList());
     }
 
-    public static Apartment load(int id) {
-        try {
-            var estate = Estate.load(id);
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            String selectSQL = "SELECT floor, rent, rooms, balcony, built_in_kitchen FROM apartments WHERE id = ?";
-            PreparedStatement pstmt = con.prepareStatement(selectSQL);
-            pstmt.setInt(1, id);
+    @Override
+    public String getTableName() {
+        return "apartments";
+    }
 
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                var apartment = new Apartment(estate);
-                apartment.setFloor(rs.getInt(FLOOR));
-                apartment.setRent(rs.getDouble(RENT));
-                apartment.setRooms(rs.getInt(ROOMS));
-                apartment.setBalcony(rs.getBoolean(BALCONY));
-                apartment.setBuiltInKitchen(rs.getBoolean(BUILT_IN_KITCHEN));
-                rs.close();
-                pstmt.close();
-                return apartment;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    @Override
+    protected void loadValues(ResultSet rs) throws SQLException {
+        super.loadValues(rs);
+        this.setFloor(rs.getInt(FLOOR));
+        this.setRent(rs.getDouble(RENT));
+        this.setRooms(rs.getInt(ROOMS));
+        this.setBalcony(rs.getBoolean(BALCONY));
+        this.setBuiltInKitchen(rs.getBoolean(BUILT_IN_KITCHEN));
+    }
+
+    public static Apartment load(int id) {
+        Apartment apartment = new Apartment();
+        return loadInternal(id, apartment);
     }
 
 

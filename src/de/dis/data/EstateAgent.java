@@ -20,6 +20,9 @@ import java.util.List;
  * id serial primary key);
  */
 public class EstateAgent {
+
+	// TODO Sollte man ggf. auch noch auf AbstractDataObject umstellen.
+
 	private int id = -1;
 	private String name;
 	private String address;

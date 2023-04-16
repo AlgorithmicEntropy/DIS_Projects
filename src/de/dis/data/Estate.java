@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Estate {
+public class Estate extends AbstractDataObject {
     public static final java.lang.String CITY = "city";
     public static final java.lang.String POSTAL_CODE = "postal_code";
     public static final java.lang.String STREET = "street";
@@ -82,63 +82,28 @@ public class Estate {
         this.agentId = agentId;
     }
 
-    public static Estate load(int id) {
-        try {
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            Estate estate = null;
-            PreparedStatement stmt = con.prepareStatement("SELECT city, postal_code, street, street_number, square_area FROM estates WHERE id = ?");
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                String city = rs.getString(CITY);
-                int postalCode = rs.getInt(POSTAL_CODE);
-                String street = rs.getString(STREET);
-                String streetNumber = rs.getString(STREET_NUMBER);
-                double squareArea = rs.getDouble(SQUARE_AREA);
-                estate = new Estate();
-                estate.setId(id);
-                estate.setCity(city);
-                estate.setPostalCode(postalCode);
-                estate.setStreet(street);
-                estate.setStreetNumber(streetNumber);
-                estate.setSquareArea(squareArea);
-            }
-            rs.close();
-            stmt.close();
-            return estate;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
+    public String getTableName() {
+        return "estates";
     }
 
-    public void save() {
-        // TODO fix me
-        try {
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            PreparedStatement stmt;
-            if (getId() == -1) {
-                stmt = con.prepareStatement("INSERT INTO estates (" + String.join(",", getDBFields()) + ") VALUES ("
-                        + getDBFields().stream().map(s -> "?").collect(Collectors.joining(", ")) + ") RETURNING id");
-                setValues(stmt);
+    @Override
+    String getIdName() {
+        return "id";
+    }
 
-                var rs = stmt.executeQuery();
-                if (rs.next()) {
-                    id = rs.getInt(1);
-                    setId(id);
-                }
-            } else {
-                java.lang.String fieldsToUpdate = getDBFields().stream().map(s -> s + " = ? ").collect(Collectors.joining(", "));
-                stmt = con.prepareStatement("UPDATE estates SET " + fieldsToUpdate + " WHERE id = ?");
-                setValues(stmt);
-                stmt.setInt(getDBFields().size() + 1, id);
-                stmt.executeUpdate();
-            }
+    @Override
+    int getIdValue() {
+        return getId();
+    }
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    @Override
+    void setIdValue(int newId) {
+        setId(newId);
+    }
 
+    public static Estate load(int id) {
+        Estate estate = new Estate();
+        return loadInternal(id, estate);
     }
 
     protected void setValues(PreparedStatement stmt) throws SQLException {
@@ -150,21 +115,27 @@ public class Estate {
         stmt.setDouble(columns.indexOf(SQUARE_AREA) + 1, squareArea);
     }
 
+    @Override
+    protected void loadValues(ResultSet rs) throws SQLException {
+        this.setId(id);
+        this.setCity(city);
+        this.setPostalCode(postalCode);
+        this.setStreet(street);
+        this.setStreetNumber(streetNumber);
+        this.setSquareArea(squareArea);
+    }
+
     public List<String> getDBFields() {
         return List.of(CITY, POSTAL_CODE, STREET, STREET_NUMBER, SQUARE_AREA);
     }
 
+    @Override
     public void delete() {
-        try {
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            String sql = "DELETE FROM estates WHERE id = ?";
-            var stm = con.prepareStatement(sql);
-            stm.setInt(1, this.id);
-            stm.executeUpdate();
+        super.delete();
+    }
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    public void save() {
+        insertOrUpdate();
     }
 
     public static List<Estate> loadAll() {

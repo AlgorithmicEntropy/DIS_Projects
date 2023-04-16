@@ -1,11 +1,21 @@
 package de.dis.data;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Sells {
+public class Sells extends AbstractDataObject{
+
+    // TODO an SW: Tabelle benötigt eine ID-Spalte!
+
+
+    private static final String ID = "id";
+    private static final String HOUSE_ID = "house_id";
+    private static final String CONTRACT_ID = "contract_id";
+    private static final String SELLER_ID = "seller";
+
+    private int id = -1;
     private int houseID = -1;
     private int contractID = -1;
     private int sellerID = -1;
@@ -36,21 +46,11 @@ public class Sells {
     }
 
     public void save() {
-        try {
-            Connection conn = DbConnectionManager.getInstance().getConnection();
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO sells (house_id, contract_id, seller) VALUES (?, ?, ?)");
-            stmt.setInt(1, houseID);
-            stmt.setInt(2, contractID);
-            stmt.setInt(3, sellerID);
-            stmt.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+       insert();
     }
 
     public static List<Sells> loadAll() {
-        // TODO implement me
-        return null;
+        return loadAllInternal(Sells::new);
     }
 
     public String toString() {
@@ -70,4 +70,43 @@ public class Sells {
     }
 
 
+    @Override
+    List<String> getDBFields() {
+        return List.of(HOUSE_ID, CONTRACT_ID, SELLER_ID);
+    }
+
+    @Override
+    String getTableName() {
+        return "sells";
+    }
+
+    @Override
+    String getIdName() {
+        return ID;
+    }
+
+    @Override
+    int getIdValue() {
+        return id;
+    }
+
+    @Override
+    void setIdValue(int newId) {
+        this.id = newId;
+    }
+
+    @Override
+    void setValues(PreparedStatement stmt) throws SQLException {
+        List<String> dbFields = getDBFields();
+        stmt.setInt(dbFields.indexOf(HOUSE_ID) + 1, houseID);
+        stmt.setInt(dbFields.indexOf(CONTRACT_ID) + 1, contractID);
+        stmt.setInt(dbFields.indexOf(SELLER_ID) + 1, sellerID);
+    }
+
+    @Override
+    void loadValues(ResultSet rs) throws SQLException {
+        setHouseID(rs.getInt(HOUSE_ID));
+        setContractID(rs.getInt(CONTRACT_ID));
+        setSellerID(rs.getInt(SELLER_ID));
+    }
 }
