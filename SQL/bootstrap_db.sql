@@ -50,18 +50,25 @@ CREATE TABLE IF NOT EXISTS purchase_contracts (
 
 CREATE TABLE IF NOT EXISTS tenancy_contracts (
     start_date DATE NOT NULL,
-    duration INTERVAL NOT NULL,
+    duration DATE NOT NULL,
     additional_costs NUMERIC NOT NULL
 ) INHERITS (contracts);
 
 CREATE TABLE IF NOT EXISTS rents (
-    apartment_id INTEGER REFERENCES estates(id),
-    contract_id INTEGER NOT NULL REFERENCES contracts(contract_number),
-    tenant_id INTEGER REFERENCES persons(id)
+    id SERIAL PRIMARY KEY,
+    apartment_id INTEGER NOT NULL,
+    contract_id INTEGER NOT NULL,
+    tenant_id INTEGER NOT NULL,
+    -- inheritance prohibits the use of foreign keys
+    -- CONSTRAINT fk_apartment_id FOREIGN KEY (apartment_id) REFERENCES estates(id),
+    -- CONSTRAINT fk_contract_id FOREIGN KEY (contract_id) REFERENCES contracts(contract_number),
+    CONSTRAINT fk_tenant_id FOREIGN KEY (tenant_id) REFERENCES persons(id)
 );
 
 CREATE TABLE IF NOT EXISTS sells (
-    house_id INTEGER REFERENCES estates(id),
-    contract_id INTEGER NOT NULL REFERENCES contracts(contract_number),
-    seller INTEGER REFERENCES persons(id)
+    -- inheritance prohibits the use of foreign keys
+    id SERIAL PRIMARY KEY,
+    house_id INTEGER NOT NULL,
+    contract_id INTEGER NOT NULL,
+    buyer_id INTEGER REFERENCES persons(id)
 );

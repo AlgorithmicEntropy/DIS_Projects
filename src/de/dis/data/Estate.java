@@ -7,19 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Estate {
+public class Estate extends AbstractDataObject {
     public static final java.lang.String CITY = "city";
     public static final java.lang.String POSTAL_CODE = "postal_code";
     public static final java.lang.String STREET = "street";
     public static final java.lang.String STREET_NUMBER = "street_number";
     public static final java.lang.String SQUARE_AREA = "square_area";
-    private int id = -1;
-    private int agentId = -1;
-    private String city;
-    private int postalCode;
-    private String street;
-    private String streetNumber;
-    private double squareArea;
+    private static final String AGENT_ID = "agent_id";
+
+    // TODO an SW: Warum initialisierst du id und agentId aber nicht postalCode?
+    // TODO an SW: Sind hier die primitiven Datentypen immer richtig oder brauchen wir vielleicht ab und an die Wrapper-Typen?
+
+    protected int id = -1;
+    protected int agentId = -1;
+    protected String city;
+    protected int postalCode;
+    protected String street;
+    protected String streetNumber;
+    protected double squareArea;
 
     // getters and setters
     public int getId() {
@@ -78,63 +83,28 @@ public class Estate {
         this.agentId = agentId;
     }
 
-    public static Estate load(int id) {
-        try {
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            Estate estate = null;
-            PreparedStatement stmt = con.prepareStatement("SELECT city, postal_code, street, street_number, square_area FROM estates WHERE id = ?");
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                String city = rs.getString("city");
-                int postalCode = rs.getInt("postal_code");
-                String street = rs.getString("street");
-                String streetNumber = rs.getString("street_number");
-                double squareArea = rs.getDouble("square_area");
-                estate = new Estate();
-                estate.setId(id);
-                estate.setCity(city);
-                estate.setPostalCode(postalCode);
-                estate.setStreet(street);
-                estate.setStreetNumber(streetNumber);
-                estate.setSquareArea(squareArea);
-            }
-            rs.close();
-            stmt.close();
-            return estate;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
+    public String getTableName() {
+        return "estates";
     }
 
-    public void save() {
-        // TODO fix me
-        try {
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            PreparedStatement stmt;
-            if (getId() == -1) {
-                stmt = con.prepareStatement("INSERT INTO estates (" + String.join(",", getDBFields()) + ") VALUES ("
-                        + getDBFields().stream().map(s -> "?").collect(Collectors.joining(", ")) + ") RETURNING id");
-                setValues(stmt);
+    @Override
+    String getIdName() {
+        return "id";
+    }
 
-                var rs = stmt.executeQuery();
-                if (rs.next()) {
-                    id = rs.getInt(1);
-                    setId(id);
-                }
-            } else {
-                java.lang.String fieldsToUpdate = getDBFields().stream().map(s -> s + " = ? ").collect(Collectors.joining(", "));
-                stmt = con.prepareStatement("UPDATE estates SET " + fieldsToUpdate + " WHERE id = ?");
-                setValues(stmt);
-                stmt.setInt(getDBFields().size() + 1, id);
-                stmt.executeUpdate();
-            }
+    @Override
+    int getIdValue() {
+        return getId();
+    }
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    @Override
+    void setIdValue(int newId) {
+        setId(newId);
+    }
 
+    public static Estate load(int id) {
+        Estate estate = new Estate();
+        return loadInternal(id, estate);
     }
 
     protected void setValues(PreparedStatement stmt) throws SQLException {
@@ -144,23 +114,30 @@ public class Estate {
         stmt.setString(columns.indexOf(STREET) + 1, street);
         stmt.setString(columns.indexOf(STREET_NUMBER) + 1, streetNumber);
         stmt.setDouble(columns.indexOf(SQUARE_AREA) + 1, squareArea);
+        stmt.setInt(columns.indexOf(AGENT_ID) + 1, agentId);
+    }
+
+    @Override
+    protected void loadValues(ResultSet rs) throws SQLException {
+        this.setCity(rs.getString(CITY));
+        this.setPostalCode(rs.getInt(POSTAL_CODE));
+        this.setStreet(rs.getString(STREET));
+        this.setStreetNumber(rs.getString(STREET_NUMBER));
+        this.setSquareArea(rs.getDouble(SQUARE_AREA));
+        this.setAgentId(rs.getInt(AGENT_ID));
     }
 
     public List<String> getDBFields() {
-        return List.of(CITY, POSTAL_CODE, STREET, STREET_NUMBER, SQUARE_AREA);
+        return List.of(CITY, POSTAL_CODE, STREET, STREET_NUMBER, SQUARE_AREA, AGENT_ID);
     }
 
+    @Override
     public void delete() {
-        try {
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            String sql = "DELETE FROM estates WHERE id = ?";
-            var stm = con.prepareStatement(sql);
-            stm.setInt(1, this.id);
-            stm.executeUpdate();
+        super.delete();
+    }
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    public void save() {
+        insertOrUpdate();
     }
 
     public static List<Estate> loadAll() {
@@ -182,6 +159,19 @@ public class Estate {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Estate{" +
+                "id=" + id +
+                ", agentId=" + agentId +
+                ", city='" + city + '\'' +
+                ", postalCode=" + postalCode +
+                ", street='" + street + '\'' +
+                ", streetNumber='" + streetNumber + '\'' +
+                ", squareArea=" + squareArea +
+                '}';
     }
 }
 

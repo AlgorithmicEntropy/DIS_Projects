@@ -20,6 +20,9 @@ import java.util.List;
  * id serial primary key);
  */
 public class EstateAgent {
+
+	// TODO Sollte man ggf. auch noch auf AbstractDataObject umstellen.
+
 	private int id = -1;
 	private String name;
 	private String address;
@@ -199,5 +202,16 @@ public class EstateAgent {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "EstateAgent{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", address='" + address + '\'' +
+				", login='" + login + '\'' +
+				", password='" + password + '\'' +
+				'}';
 	}
 }

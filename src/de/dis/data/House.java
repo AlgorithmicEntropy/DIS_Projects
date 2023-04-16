@@ -22,6 +22,7 @@ public class House extends Estate {
     public House() {}
 
     public House(Estate estate) {
+        setAgentId(estate.getAgentId());
         setId(estate.getId());
         setCity(estate.getCity());
         setPostalCode(estate.getPostalCode());
@@ -56,12 +57,25 @@ public class House extends Estate {
     }
 
     @Override
+    public String getTableName() {
+        return "houses";
+    }
+
+    @Override
     protected void setValues(PreparedStatement stmt) throws SQLException {
         super.setValues(stmt);
         List<String> columns = getDBFields();
         stmt.setInt(columns.indexOf(FLOORS) +1, floors);
         stmt.setDouble(columns.indexOf(PRICE) +1, price);
         stmt.setBoolean(columns.indexOf(GARDEN) +1, garden);
+    }
+
+    @Override
+    protected void loadValues(ResultSet rs) throws SQLException {
+        super.loadValues(rs);
+        this.setFloors(rs.getInt(FLOORS));
+        this.setPrice(rs.getDouble(PRICE));
+        this.setGarden(rs.getBoolean(GARDEN));
     }
 
     @Override
@@ -72,28 +86,11 @@ public class House extends Estate {
                 .collect(Collectors.toList());
     }
 
-    public static House load(int id) {
-        try {
-            var estate = Estate.load(id);
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            String selectSQL = "SELECT floors, price, garden FROM houses WHERE id = ?";
-            PreparedStatement pstmt = con.prepareStatement(selectSQL);
-            pstmt.setInt(1, id);
 
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                var house = new House(estate);
-                house.setFloors(rs.getInt(1));
-                house.setPrice(rs.getDouble(2));
-                house.setGarden(rs.getBoolean(3));
-                rs.close();
-                pstmt.close();
-                return house;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static House load(int id) {
+        House house = new House();
+        house.setId(id);
+        return loadInternal(id, house);
     }
 
     public static List<Estate> loadAll() {
@@ -119,13 +116,18 @@ public class House extends Estate {
 
     @Override
     public String toString() {
-        var builder = new StringBuilder();
-        builder.append(getCity());
-        builder.append(" ");
-        builder.append(getStreet());
-        builder.append(" ");
-        builder.append(getStreetNumber());
-        return builder.toString();
+        return "House {" +
+                "id=" + id +
+                ", agentId=" + agentId +
+                ", city='" + city + '\'' +
+                ", postalCode=" + postalCode +
+                ", street='" + street + '\'' +
+                ", streetNumber='" + streetNumber + '\'' +
+                ", squareArea=" + squareArea +
+                ", floors=" + floors +
+                ", price=" + price +
+                ", garden=" + garden +
+                '}';
     }
 }
 

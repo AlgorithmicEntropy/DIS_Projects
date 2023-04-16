@@ -3,6 +3,8 @@ package de.dis.cli;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 
@@ -166,14 +168,16 @@ public class FormUtil {
 		return ret;
 	}
 
-	public static Date readDate(String contractDate) {
-		// TODO implement me
-		return new Date();
-	}
-
-	public static Duration readDuration(String contractDuration) {
-		// TODO implement me
-		return Duration.ofHours(2);
+	public static Date readDate(String label) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		while (true) {
+			String line = readString(label + " (format dd-mm-yyyy)");
+			try {
+				return sdf.parse(line);
+			} catch (ParseException e) {
+				System.err.println("Invalid Entry: Please provide a correct date!");
+			}
+		}
 	}
 
 	public static void waitForInput() {
