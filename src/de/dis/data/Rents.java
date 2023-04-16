@@ -1,6 +1,5 @@
 package de.dis.data;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,15 +7,12 @@ import java.util.List;
 
 public class Rents extends AbstractDataObject{
 
-    // TODO an SW: Tabelle benötigt eine ID-Spalte!
-
     private static final String ID= "id";
     private static final String APARTMENT_ID = "apartment_id";
     private static final String CONTRACT_ID= "contract_id";
     private static final String TENANT_ID= "tenant_id";
 
     private int id = -1;
-
     private int apartmentID = -1;
     private int contractID = -1;
     private int tenantID = -1;
@@ -49,7 +45,7 @@ public class Rents extends AbstractDataObject{
         return id;
     }
 
-    public void setId(int id) {
+    public void setID(int id) {
         this.id = id;
     }
 
@@ -67,15 +63,14 @@ public class Rents extends AbstractDataObject{
         var contract = TenancyContract.load(contractID);
         var tenant = Person.load(tenantID);
         var builder = new StringBuilder();
-        builder.append(getClass().getName()).append("{");
-        builder.append(ID).append("=").append(id);
-        builder.append(",");
+        builder.append("Tenancy Contract:\n");
+        builder.append(ID).append(": ").append(id);
+        builder.append("\n");
         builder.append(apartment.toString());
-        builder.append(",");
-        builder.append(tenant.toString());
-        builder.append(",");
+        builder.append("\n");
+        builder.append(tenant.toString().replace("Person", "Tenant"));
+        builder.append("\n");
         builder.append(contract.toString());
-        builder.append("}");
         return builder.toString();
     }
 
@@ -101,7 +96,7 @@ public class Rents extends AbstractDataObject{
 
     @Override
     void setIdValue(int newId) {
-        setId(newId);
+        setID(newId);
     }
 
     @Override
@@ -114,6 +109,7 @@ public class Rents extends AbstractDataObject{
 
     @Override
     void loadValues(ResultSet rs) throws SQLException {
+        setID(rs.getInt(ID));
         setApartmentID(rs.getInt(APARTMENT_ID));
         setContractID(rs.getInt(CONTRACT_ID));
         setTenantID(rs.getInt(TENANT_ID));

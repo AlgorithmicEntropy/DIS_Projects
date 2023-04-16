@@ -75,11 +75,9 @@ public class PurchaseContract extends Contract {
         this.setInterestRate(rs.getDouble(INTEREST_RATE));
     }
 
-
-
     @Override
     public String toString() {
-        return "PurchaseContract{" +
+        return "PurchaseContract {" +
                 "contractNumber=" + contractNumber +
                 ", date=" + date +
                 ", place='" + place + '\'' +

@@ -13,6 +13,7 @@ public class Estate extends AbstractDataObject {
     public static final java.lang.String STREET = "street";
     public static final java.lang.String STREET_NUMBER = "street_number";
     public static final java.lang.String SQUARE_AREA = "square_area";
+    private static final String AGENT_ID = "agent_id";
 
     // TODO an SW: Warum initialisierst du id und agentId aber nicht postalCode?
     // TODO an SW: Sind hier die primitiven Datentypen immer richtig oder brauchen wir vielleicht ab und an die Wrapper-Typen?
@@ -113,20 +114,21 @@ public class Estate extends AbstractDataObject {
         stmt.setString(columns.indexOf(STREET) + 1, street);
         stmt.setString(columns.indexOf(STREET_NUMBER) + 1, streetNumber);
         stmt.setDouble(columns.indexOf(SQUARE_AREA) + 1, squareArea);
+        stmt.setInt(columns.indexOf(AGENT_ID) + 1, agentId);
     }
 
     @Override
     protected void loadValues(ResultSet rs) throws SQLException {
-        this.setId(id);
-        this.setCity(city);
-        this.setPostalCode(postalCode);
-        this.setStreet(street);
-        this.setStreetNumber(streetNumber);
-        this.setSquareArea(squareArea);
+        this.setCity(rs.getString(CITY));
+        this.setPostalCode(rs.getInt(POSTAL_CODE));
+        this.setStreet(rs.getString(STREET));
+        this.setStreetNumber(rs.getString(STREET_NUMBER));
+        this.setSquareArea(rs.getDouble(SQUARE_AREA));
+        this.setAgentId(rs.getInt(AGENT_ID));
     }
 
     public List<String> getDBFields() {
-        return List.of(CITY, POSTAL_CODE, STREET, STREET_NUMBER, SQUARE_AREA);
+        return List.of(CITY, POSTAL_CODE, STREET, STREET_NUMBER, SQUARE_AREA, AGENT_ID);
     }
 
     @Override

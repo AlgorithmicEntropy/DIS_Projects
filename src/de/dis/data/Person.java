@@ -18,26 +18,6 @@ public class Person extends AbstractDataObject {
     private String name;
     private String address;
 
-    public static List<Person> getAll() {
-        try {
-            Connection con = DbConnectionManager.getInstance().getConnection();
-            String selectSQL = "SELECT id FROM persons";
-            PreparedStatement pstmt = con.prepareStatement(selectSQL);
-            ResultSet rs = pstmt.executeQuery();
-            var people = new ArrayList<Person>();
-            while (rs.next()) {
-                var id = rs.getInt(1);
-                people.add(Person.load(id));
-            }
-            rs.close();
-            pstmt.close();
-            return people;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     // getters and setters
     public String getFirstName() {
         return firstName;
@@ -77,12 +57,33 @@ public class Person extends AbstractDataObject {
 
     public static Person load(int id) {
         Person person = new Person();
+        person.setId(id);
         return loadInternal(id, person);
+    }
+
+    public static List<Person> getAll() {
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            String selectSQL = "SELECT id FROM persons";
+            PreparedStatement pstmt = con.prepareStatement(selectSQL);
+            ResultSet rs = pstmt.executeQuery();
+            var people = new ArrayList<Person>();
+            while (rs.next()) {
+                var id = rs.getInt(1);
+                people.add(Person.load(id));
+            }
+            rs.close();
+            pstmt.close();
+            return people;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "Person {" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", name='" + name + '\'' +

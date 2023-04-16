@@ -94,7 +94,7 @@ public abstract class AbstractDataObject {
     protected void insert() {
         try {
             Connection con = DbConnectionManager.getInstance().getConnection();
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO "+getTableName() + " (" + getDBFields() + ") VALUES ("
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO "+getTableName() + " (" + String.join(",", getDBFields()) + ") VALUES ("
                     + getDBFields().stream().map(s -> "?").collect(Collectors.joining(", ")) + ") RETURNING " + getIdName());
             setValues(stmt);
             stmt.executeQuery();

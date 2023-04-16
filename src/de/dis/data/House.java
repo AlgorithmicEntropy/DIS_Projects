@@ -22,6 +22,7 @@ public class House extends Estate {
     public House() {}
 
     public House(Estate estate) {
+        setAgentId(estate.getAgentId());
         setId(estate.getId());
         setCity(estate.getCity());
         setPostalCode(estate.getPostalCode());
@@ -88,6 +89,7 @@ public class House extends Estate {
 
     public static House load(int id) {
         House house = new House();
+        house.setId(id);
         return loadInternal(id, house);
     }
 
@@ -114,7 +116,7 @@ public class House extends Estate {
 
     @Override
     public String toString() {
-        return "House{" +
+        return "House {" +
                 "id=" + id +
                 ", agentId=" + agentId +
                 ", city='" + city + '\'' +

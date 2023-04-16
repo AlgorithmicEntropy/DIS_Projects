@@ -1,6 +1,5 @@
 package de.dis.data;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +14,7 @@ public class TenancyContract extends Contract {
     public static final String DURATION = "duration";
     public static final String ADDITIONAL_COSTS = "additional_costs";
     private Date startDate;
-    private Duration duration;
+    private Date duration;
     private double additionalCosts;
 
     public TenancyContract() {}
@@ -35,11 +34,11 @@ public class TenancyContract extends Contract {
         this.startDate = startDate;
     }
 
-    public Duration getDuration() {
+    public Date getDuration() {
         return duration;
     }
 
-    public void setDuration(Duration duration) {
+    public void setDuration(Date duration) {
         this.duration = duration;
     }
 
@@ -56,7 +55,7 @@ public class TenancyContract extends Contract {
         super.setValues(stmt);
         List<String> columns = getDBFields();
         stmt.setDate(columns.indexOf(START_DATE) + 1, new java.sql.Date(startDate.getTime()));
-        stmt.setObject(columns.indexOf(DURATION) + 1, duration);
+        stmt.setDate(columns.indexOf(DURATION) + 1, new java.sql.Date(duration.getTime()));
         stmt.setDouble(columns.indexOf(ADDITIONAL_COSTS) + 1, additionalCosts);
     }
 
@@ -68,9 +67,10 @@ public class TenancyContract extends Contract {
                 .collect(Collectors.toList());
     }
 
-    public static PurchaseContract load(int contractNumber) {
-        PurchaseContract contract = new PurchaseContract();
-        return (PurchaseContract) loadInternal(contractNumber, contract);
+    public static TenancyContract load(int contractNumber) {
+        TenancyContract contract = new TenancyContract();
+        contract.setContractNumber(contractNumber);
+        return loadInternal(contractNumber, contract);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TenancyContract extends Contract {
     protected void loadValues(ResultSet rs) throws SQLException {
         super.loadValues(rs);
         this.setStartDate(rs.getDate(START_DATE));
-        this.setDuration(rs.getObject(DURATION, Duration.class));
+        this.setDuration(rs.getDate(DURATION));
         this.setAdditionalCosts(rs.getDouble(ADDITIONAL_COSTS));
     }
 

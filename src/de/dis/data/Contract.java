@@ -12,7 +12,8 @@ public class Contract extends AbstractDataObject {
     public static final String PLACE = "place";
     public static final String DATE = "date";
     public static final String CONTRACT_NUMBER = "contract_number";
-    protected int contractNumber;
+
+    protected int contractNumber = -1;
     protected Date date;
     protected String place;
 
@@ -43,13 +44,12 @@ public class Contract extends AbstractDataObject {
 
     protected void setValues(PreparedStatement stmt) throws SQLException {
         List<String> columns = getDBFields();
-        stmt.setInt(columns.indexOf(CONTRACT_NUMBER) + 1, contractNumber);
         stmt.setDate(columns.indexOf(DATE) + 1, new java.sql.Date(date.getTime()));
         stmt.setString(columns.indexOf(PLACE) + 1, place);
     }
 
     public List<String> getDBFields() {
-        return List.of(CONTRACT_NUMBER, DATE, PLACE);
+        return List.of(DATE, PLACE);
     }
 
     public String getTableName() {
@@ -72,24 +72,24 @@ public class Contract extends AbstractDataObject {
     }
 
     public void save() {
-        insert();
+        insertOrUpdate();
     }
 
     public static Contract load(int contractNumber) {
         Contract contract = new Contract();
+        contract.setContractNumber(contractNumber);
         return loadInternal(contractNumber, contract);
     }
 
 
     protected void loadValues(ResultSet rs) throws SQLException {
-        this.setContractNumber(rs.getInt(CONTRACT_NUMBER));
         this.setDate(rs.getDate(DATE));
         this.setPlace(rs.getString(PLACE));
     }
 
     @Override
     public String toString() {
-        return "Contract{" +
+        return "Contract {" +
                 "contractNumber=" + contractNumber +
                 ", date=" + date +
                 ", place='" + place + '\'' +

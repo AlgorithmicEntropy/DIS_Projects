@@ -2,7 +2,6 @@ package de.dis.cli;
 
 import de.dis.data.*;
 
-import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
@@ -82,17 +81,17 @@ public class AgentMenu extends AbstractMenu {
         var rents = Rents.loadAll();
         var sells = Sells.loadAll();
 
-        assert rents != null;
         System.out.println("-- Tenancy Contracts --");
         for (var rent : rents) {
             System.out.println(rent.toString());
+            System.out.println("\n");
         }
 
-        assert sells != null;
         System.out.println("-- Purchase Contracts --");
         for (var sold : sells) {
             System.out.println(sold.toString());
         }
+        System.out.println("\nPress any key to continue");
         FormUtil.waitForInput();
     }
 
@@ -125,10 +124,11 @@ public class AgentMenu extends AbstractMenu {
         PurchaseContract contract = new PurchaseContract(base);
         contract.setNumberOfInstallments(noOfInstallments);
         contract.setInterestRate(intrestRate);
+        contract.save();
 
         Sells sells = new Sells();
         sells.setHouseID(houseID);
-        sells.setSellerID(personID);
+        sells.setBuyerID(personID);
         sells.setContractID(contract.getContractNumber());
 
         sells.save();
@@ -141,15 +141,16 @@ public class AgentMenu extends AbstractMenu {
         int tenantID = showPersons().getId();
 
         Date startDate = FormUtil.readDate("Start Date");
-        Duration duration = FormUtil.readDuration("Contract Duration");
+        Date endDate = FormUtil.readDate("Contract End Date");
         double additionalCosts = FormUtil.readDouble("Additional Costs");
 
         TenancyContract tenancyContract = new TenancyContract(base);
         tenancyContract.setStartDate(startDate);
-        tenancyContract.setDuration(duration);
+        tenancyContract.setDuration(endDate);
         tenancyContract.setAdditionalCosts(additionalCosts);
 
-        int contract_id = tenancyContract.Save();
+        tenancyContract.save();
+        int contract_id = tenancyContract.getContractNumber();
 
         Rents rents = new Rents();
         rents.setApartmentID(apartmentID);
@@ -290,7 +291,7 @@ public class AgentMenu extends AbstractMenu {
             return;
         }
         Session.getInstance().loginAgent(agent);
-        System.out.println("Logged in as " + agent.getLogin());
+        System.out.println("Welcome " + agent.getName());
     }
 
     private void addEstate() {

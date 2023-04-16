@@ -68,14 +68,13 @@ public class Menu {
 			System.out.print("-- ");
 			try {
 				selection = Integer.parseInt(stdin.readLine());
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
+			} catch (NumberFormatException ignored) {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
 			if(selection < 1 || selection > returnValues.size()) {
-				System.err.println("Ungültige Eingabe!");
+				System.err.println("Invalid Entry!");
 				selection = -1;
 			} 
 		}

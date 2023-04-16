@@ -28,6 +28,7 @@ public class Apartment extends Estate {
     }
 
     public Apartment(Estate estate) {
+        setAgentId(estate.getAgentId());
         setId(estate.getId());
         setCity(estate.getCity());
         setPostalCode(estate.getPostalCode());
@@ -113,6 +114,7 @@ public class Apartment extends Estate {
 
     public static Apartment load(int id) {
         Apartment apartment = new Apartment();
+        apartment.setId(id);
         return loadInternal(id, apartment);
     }
 
@@ -140,7 +142,7 @@ public class Apartment extends Estate {
 
     @Override
     public String toString() {
-        return "Apartment{" +
+        return "Apartment {" +
                 "floor=" + floor +
                 ", rent=" + rent +
                 ", rooms=" + rooms +
