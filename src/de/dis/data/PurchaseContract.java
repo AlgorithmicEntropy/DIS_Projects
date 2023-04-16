@@ -67,7 +67,12 @@ public class PurchaseContract extends Contract {
 
     @Override
     public String toString() {
-        // TODO implement me
-        return super.toString();
+        return "PurchaseContract{" +
+                "contractNumber=" + contractNumber +
+                ", date=" + date +
+                ", place='" + place + '\'' +
+                ", numberOfInstallments=" + numberOfInstallments +
+                ", interestRate=" + interestRate +
+                '}';
     }
 }

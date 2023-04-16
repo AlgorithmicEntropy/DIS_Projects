@@ -13,13 +13,17 @@ public class Estate {
     public static final java.lang.String STREET = "street";
     public static final java.lang.String STREET_NUMBER = "street_number";
     public static final java.lang.String SQUARE_AREA = "square_area";
-    private int id = -1;
-    private int agentId = -1;
-    private String city;
-    private int postalCode;
-    private String street;
-    private String streetNumber;
-    private double squareArea;
+
+    // TODO an SW: Warum initialisierst du id und agentId aber nicht postalCode?
+    // TODO an SW: Sind hier die primitiven Datentypen immer richtig oder brauchen wir vielleicht ab und an die Wrapper-Typen?
+
+    protected int id = -1;
+    protected int agentId = -1;
+    protected String city;
+    protected int postalCode;
+    protected String street;
+    protected String streetNumber;
+    protected double squareArea;
 
     // getters and setters
     public int getId() {
@@ -86,11 +90,11 @@ public class Estate {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                String city = rs.getString("city");
-                int postalCode = rs.getInt("postal_code");
-                String street = rs.getString("street");
-                String streetNumber = rs.getString("street_number");
-                double squareArea = rs.getDouble("square_area");
+                String city = rs.getString(CITY);
+                int postalCode = rs.getInt(POSTAL_CODE);
+                String street = rs.getString(STREET);
+                String streetNumber = rs.getString(STREET_NUMBER);
+                double squareArea = rs.getDouble(SQUARE_AREA);
                 estate = new Estate();
                 estate.setId(id);
                 estate.setCity(city);
@@ -182,6 +186,19 @@ public class Estate {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Estate{" +
+                "id=" + id +
+                ", agentId=" + agentId +
+                ", city='" + city + '\'' +
+                ", postalCode=" + postalCode +
+                ", street='" + street + '\'' +
+                ", streetNumber='" + streetNumber + '\'' +
+                ", squareArea=" + squareArea +
+                '}';
     }
 }
 

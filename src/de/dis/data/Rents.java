@@ -58,10 +58,13 @@ public class Rents {
         var contract = TenancyContract.load(contractID);
         var tenant = Person.load(tenantID);
         var builder = new StringBuilder();
-        builder.append("-- Rent Contract info --\n");
+        builder.append(getClass().getName()).append("{");
         builder.append(apartment.toString());
+        builder.append(",");
         builder.append(tenant.toString());
+        builder.append(",");
         builder.append(contract.toString());
+        builder.append("}");
         return builder.toString();
     }
 }

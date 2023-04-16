@@ -79,8 +79,14 @@ public class TenancyContract extends Contract {
 
     @Override
     public String toString() {
-        // TODO implement me
-        return super.toString();
+        return "TenancyContract{" +
+                "contractNumber=" + contractNumber +
+                ", date=" + date +
+                ", place='" + place + '\'' +
+                ", startDate=" + startDate +
+                ", duration=" + duration +
+                ", additionalCosts=" + additionalCosts +
+                '}';
     }
 }
 

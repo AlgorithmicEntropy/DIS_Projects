@@ -52,4 +52,22 @@ public class Sells {
         // TODO implement me
         return null;
     }
+
+    public String toString() {
+        var house = House.load(houseID);
+        var contract = PurchaseContract.load(contractID);
+        // TODO an SW: Ich glaube das müsste der Buyer und nicht der Seller sein. Dann müssten wir aber unser gesamtes Modell noch mal umkrempeln :(
+        var seller = Person.load(sellerID);
+        var builder = new StringBuilder();
+        builder.append(getClass().getName()).append("{");
+        builder.append(house.toString());
+        builder.append(",");
+        builder.append(seller.toString());
+        builder.append(",");
+        builder.append(contract.toString());
+        builder.append("}");
+        return builder.toString();
+    }
+
+
 }

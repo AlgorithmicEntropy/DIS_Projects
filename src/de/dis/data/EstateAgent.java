@@ -200,4 +200,15 @@ public class EstateAgent {
 			ex.printStackTrace();
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "EstateAgent{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", address='" + address + '\'' +
+				", login='" + login + '\'' +
+				", password='" + password + '\'' +
+				'}';
+	}
 }

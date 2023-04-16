@@ -83,9 +83,9 @@ public class House extends Estate {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 var house = new House(estate);
-                house.setFloors(rs.getInt(1));
-                house.setPrice(rs.getDouble(2));
-                house.setGarden(rs.getBoolean(3));
+                house.setFloors(rs.getInt(FLOORS));
+                house.setPrice(rs.getDouble(PRICE));
+                house.setGarden(rs.getBoolean(GARDEN));
                 rs.close();
                 pstmt.close();
                 return house;
@@ -119,13 +119,18 @@ public class House extends Estate {
 
     @Override
     public String toString() {
-        var builder = new StringBuilder();
-        builder.append(getCity());
-        builder.append(" ");
-        builder.append(getStreet());
-        builder.append(" ");
-        builder.append(getStreetNumber());
-        return builder.toString();
+        return "House{" +
+                "id=" + id +
+                ", agentId=" + agentId +
+                ", city='" + city + '\'' +
+                ", postalCode=" + postalCode +
+                ", street='" + street + '\'' +
+                ", streetNumber='" + streetNumber + '\'' +
+                ", squareArea=" + squareArea +
+                ", floors=" + floors +
+                ", price=" + price +
+                ", garden=" + garden +
+                '}';
     }
 }
 

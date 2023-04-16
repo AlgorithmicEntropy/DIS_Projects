@@ -24,7 +24,8 @@ public class Apartment extends Estate {
     private boolean balcony;
     private boolean builtInKitchen;
 
-    public Apartment() {}
+    public Apartment() {
+    }
 
     public Apartment(Estate estate) {
         setId(estate.getId());
@@ -80,11 +81,11 @@ public class Apartment extends Estate {
     protected void setValues(PreparedStatement stmt) throws SQLException {
         super.setValues(stmt);
         List<String> columns = getDBFields();
-        stmt.setInt(columns.indexOf(FLOOR) +1, getFloor());
-        stmt.setDouble(columns.indexOf(RENT) +1, getRent());
-        stmt.setInt(columns.indexOf(ROOMS) +1, getRooms());
-        stmt.setBoolean(columns.indexOf(BALCONY) +1, getBalcony());
-        stmt.setBoolean(columns.indexOf(BUILT_IN_KITCHEN) +1, getBuiltInKitchen());
+        stmt.setInt(columns.indexOf(FLOOR) + 1, getFloor());
+        stmt.setDouble(columns.indexOf(RENT) + 1, getRent());
+        stmt.setInt(columns.indexOf(ROOMS) + 1, getRooms());
+        stmt.setBoolean(columns.indexOf(BALCONY) + 1, getBalcony());
+        stmt.setBoolean(columns.indexOf(BUILT_IN_KITCHEN) + 1, getBuiltInKitchen());
     }
 
     @Override
@@ -106,11 +107,11 @@ public class Apartment extends Estate {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 var apartment = new Apartment(estate);
-                apartment.setFloor(rs.getInt(1));
-                apartment.setRent(rs.getDouble(2));
-                apartment.setRooms(rs.getInt(3));
-                apartment.setBalcony(rs.getBoolean(4));
-                apartment.setBuiltInKitchen(rs.getBoolean(5));
+                apartment.setFloor(rs.getInt(FLOOR));
+                apartment.setRent(rs.getDouble(RENT));
+                apartment.setRooms(rs.getInt(ROOMS));
+                apartment.setBalcony(rs.getBoolean(BALCONY));
+                apartment.setBuiltInKitchen(rs.getBoolean(BUILT_IN_KITCHEN));
                 rs.close();
                 pstmt.close();
                 return apartment;
@@ -145,12 +146,19 @@ public class Apartment extends Estate {
 
     @Override
     public String toString() {
-        var builder = new StringBuilder();
-        builder.append(getCity());
-        builder.append(" ");
-        builder.append(getStreet());
-        builder.append(" ");
-        builder.append(getStreetNumber());
-        return builder.toString();
+        return "Apartment{" +
+                "floor=" + floor +
+                ", rent=" + rent +
+                ", rooms=" + rooms +
+                ", balcony=" + balcony +
+                ", builtInKitchen=" + builtInKitchen +
+                ", id=" + id +
+                ", agentId=" + agentId +
+                ", city='" + city + '\'' +
+                ", postalCode=" + postalCode +
+                ", street='" + street + '\'' +
+                ", streetNumber='" + streetNumber + '\'' +
+                ", squareArea=" + squareArea +
+                '}';
     }
 }

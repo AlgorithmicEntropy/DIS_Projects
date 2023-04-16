@@ -2,6 +2,7 @@ package de.dis.data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -11,9 +12,9 @@ public class Contract {
     public static final String PLACE = "place";
     public static final String DATE = "date";
     public static final String CONTRACT_NUMBER = "contract_number";
-    private int contractNumber;
-    private Date date;
-    private String place;
+    protected int contractNumber;
+    protected Date date;
+    protected String place;
 
     // getters and setters
     public int getContractNumber() {
@@ -44,7 +45,7 @@ public class Contract {
         try {
             Connection con = DbConnectionManager.getInstance().getConnection();
             PreparedStatement stmt = con.prepareStatement("INSERT INTO contracts (" + getDBFields() + ") VALUES ("
-                    + getDBFields().stream().map(s -> "?").collect(Collectors.joining(", ")) + ") RETURNING id");
+                    + getDBFields().stream().map(s -> "?").collect(Collectors.joining(", ")) + ") RETURNING contract_number");
             setValues(stmt);
             stmt.executeQuery();
         } catch (SQLException ex) {
@@ -63,15 +64,36 @@ public class Contract {
         return List.of(CONTRACT_NUMBER, DATE, PLACE);
     }
 
-    public static Contract load() {
-        // TODO implement me
-        return new Contract();
+    public static Contract load(int contractNumber) {
+        try {
+            Connection con = DbConnectionManager.getInstance().getConnection();
+            Contract contract = null;
+            String selectFields = String.join(",", new Contract().getDBFields());
+            PreparedStatement stmt = con.prepareStatement("SELECT "+ selectFields + " FROM estates WHERE contract_number = ?");
+            stmt.setInt(1, contractNumber);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                contract = new Contract();
+                contract.setContractNumber(rs.getInt(CONTRACT_NUMBER));
+                contract.setDate(rs.getDate(DATE));
+                contract.setPlace(rs.getString(PLACE));
+            }
+            rs.close();
+            stmt.close();
+            return contract;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public String toString() {
-        // TODO implement me
-        return super.toString();
+        return "Contract{" +
+                "contractNumber=" + contractNumber +
+                ", date=" + date +
+                ", place='" + place + '\'' +
+                '}';
     }
 }
 
