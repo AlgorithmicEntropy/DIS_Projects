@@ -44,7 +44,7 @@ public class Contract {
     public void save() {
         try {
             Connection con = DbConnectionManager.getInstance().getConnection();
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO contracts (" + getDBFields() + ") VALUES ("
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO "+getTableName() + " (" + getDBFields() + ") VALUES ("
                     + getDBFields().stream().map(s -> "?").collect(Collectors.joining(", ")) + ") RETURNING contract_number");
             setValues(stmt);
             stmt.executeQuery();
@@ -64,27 +64,50 @@ public class Contract {
         return List.of(CONTRACT_NUMBER, DATE, PLACE);
     }
 
+    public String getTableName() {
+        return "contracts";
+    }
+
     public static Contract load(int contractNumber) {
+        Contract contract = new Contract();
+        return loadInternal(contractNumber, contract);
+    }
+
+    /**
+     * Loads the contract data for the contract number. If there is a result for the contract number, the contract object is filled with the found data.
+     * Otherwise, null is returned.
+     * @param <C> The type of the contract to be handled
+     * @param contractNumber Number of the contract to be loaded
+     * @param contract contract object to be filled with data if there is a result
+     * @return contract data / null if there is no result for the contract number
+     */
+    protected static <C extends Contract> C  loadInternal (int contractNumber, C contract    ){
         try {
             Connection con = DbConnectionManager.getInstance().getConnection();
-            Contract contract = null;
-            String selectFields = String.join(",", new Contract().getDBFields());
-            PreparedStatement stmt = con.prepareStatement("SELECT "+ selectFields + " FROM estates WHERE contract_number = ?");
+            String selectFields = String.join(",", contract.getDBFields());
+            PreparedStatement stmt = con.prepareStatement("SELECT "+ selectFields + " FROM "+contract.getTableName() + " WHERE contract_number = ?");
             stmt.setInt(1, contractNumber);
             ResultSet rs = stmt.executeQuery();
+            C result = null;
             if (rs.next()) {
-                contract = new Contract();
-                contract.setContractNumber(rs.getInt(CONTRACT_NUMBER));
-                contract.setDate(rs.getDate(DATE));
-                contract.setPlace(rs.getString(PLACE));
+                contract.loadValues(rs);
+                result = contract;
             }
             rs.close();
             stmt.close();
-            return contract;
+            return result;
         } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
         }
+
+    }
+
+
+    protected void loadValues(ResultSet rs) throws SQLException {
+        this.setContractNumber(rs.getInt(CONTRACT_NUMBER));
+        this.setDate(rs.getDate(DATE));
+        this.setPlace(rs.getString(PLACE));
     }
 
     @Override

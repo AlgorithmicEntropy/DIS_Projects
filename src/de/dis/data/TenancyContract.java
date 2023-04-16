@@ -2,6 +2,7 @@ package de.dis.data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.Date;
@@ -67,14 +68,21 @@ public class TenancyContract extends Contract {
                 .collect(Collectors.toList());
     }
 
-    public int Save() {
-        // TODO implement me
-        return -1;
+    public static PurchaseContract load(int contractNumber) {
+        PurchaseContract contract = new PurchaseContract();
+        return (PurchaseContract) loadInternal(contractNumber, contract);
     }
 
-    public static TenancyContract load(int id) {
-        // TODO implement me
-        return new TenancyContract();
+    @Override
+    public String getTableName() {
+        return "tenancy_contracts";
+    }
+
+    @Override
+    protected void loadValues(ResultSet rs) throws SQLException {
+        this.setStartDate(rs.getDate(START_DATE));
+        this.setDuration(rs.getObject(DURATION, Duration.class));
+        this.setAdditionalCosts(rs.getDouble(ADDITIONAL_COSTS));
     }
 
     @Override

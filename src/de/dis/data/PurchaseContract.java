@@ -1,7 +1,9 @@
 package de.dis.data;
 
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -56,14 +58,18 @@ public class PurchaseContract extends Contract {
                 .collect(Collectors.toList());
     }
 
-    public void Save() {
-        // TODO implement me
+    public static PurchaseContract load(int contractNumber) {
+        PurchaseContract contract = new PurchaseContract();
+        return (PurchaseContract) loadInternal(contractNumber, contract);
     }
 
-    public static PurchaseContract load(int id) {
-        // TODO implement me
-        return new PurchaseContract();
+    @Override
+    protected void loadValues(ResultSet rs) throws SQLException {
+        this.setNumberOfInstallments(rs.getInt(NUM_INSTALLMENTS));
+        this.setInterestRate(rs.getDouble(INTEREST_RATE));
     }
+
+
 
     @Override
     public String toString() {
