@@ -15,9 +15,6 @@ public class Estate extends AbstractDataObject {
     public static final java.lang.String SQUARE_AREA = "square_area";
     private static final String AGENT_ID = "agent_id";
 
-    // TODO an SW: Warum initialisierst du id und agentId aber nicht postalCode?
-    // TODO an SW: Sind hier die primitiven Datentypen immer richtig oder brauchen wir vielleicht ab und an die Wrapper-Typen?
-
     protected int id = -1;
     protected int agentId = -1;
     protected String city;
