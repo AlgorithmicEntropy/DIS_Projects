@@ -61,7 +61,6 @@ public class Sells extends AbstractDataObject{
     public String toString() {
         var house = House.load(houseID);
         var contract = PurchaseContract.load(contractID);
-        // TODO an SW: Ich glaube das müsste der Buyer und nicht der Seller sein. Dann müssten wir aber unser gesamtes Modell noch mal umkrempeln :(
         var buyer = Person.load(buyerID);
         var builder = new StringBuilder();
         builder.append("Sold House:\n");

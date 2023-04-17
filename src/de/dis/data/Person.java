@@ -13,7 +13,7 @@ public class Person extends AbstractDataObject {
     private static final String NAME = "name";
     private static final String ADDRESS = "address";
 
-    private int id;
+    private int id = -1;
     private String firstName;
     private String name;
     private String address;
