@@ -4,23 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab698545-f522-44f2-a910-466c9fc0aa02" name="Changes" comment="Add menu functions&#10;Add Sells and Rents classes&#10;Refactor ctors">
+    <list default="true" id="ab698545-f522-44f2-a910-466c9fc0aa02" name="Changes" comment="Begin to move menu functions to own class">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL/bootstrap_db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/bootstrap_db.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL/fill_db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/fill_db.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/cli/AgentMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/cli/AgentMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/cli/FormUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/cli/FormUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/cli/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/cli/Menu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/AbstractDataObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/AbstractDataObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Apartment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Apartment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Contract.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Contract.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Estate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Estate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/House.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/House.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Person.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/PurchaseContract.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/PurchaseContract.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Rents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Rents.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/Sells.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/Sells.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/dis/data/TenancyContract.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/dis/data/TenancyContract.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +45,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "dart.analysis.tool.window.visible": "false",
+    "last_opened_file_path": "/home/sebastian/Dokumente/Studium/SS_23/DIS/Exercises/DIS_Projects",
     "project.structure.last.edited": "SDKs",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",
@@ -96,6 +82,10 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Application.Main" />
+      <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
