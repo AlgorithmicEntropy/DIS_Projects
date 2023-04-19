@@ -10,5 +10,16 @@
 		<property name="firstName" type="string" column="first_name" />
 		<property name="name" type="string" column="name" />
 		<property name="address" type="string" column="address" />
+
+		<set name="sells" inverse="true">
+			<key column="buyer_id" />
+			<one-to-many class="de.dis.data.Sells" />
+		</set>
+
+		<set name="rents" inverse="true">
+			<key column="tenant_id" />
+			<one-to-many class="de.dis.data.Rents" />
+		</set>
+
 	</class>
 </hibernate-mapping>

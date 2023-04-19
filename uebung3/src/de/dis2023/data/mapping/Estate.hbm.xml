@@ -18,6 +18,11 @@
 			<property name="floors" type="integer" column="floors" />
 			<property name="price" type="double" column="price" />
 			<property name="garden" type="boolean" column="garden" />
+
+			<set name="sells" inverse="true">
+				<key column="house_id" />
+				<one-to-many class="de.dis.data.Sells" />
+			</set>
 		</union-subclass>
 
 		<union-subclass name="de.dis.data.Apartment" table="apartments">
@@ -26,6 +31,12 @@
 			<property name="rooms" type="integer" column="rooms" />
 			<property name="balcony" type="boolean" column="balcony" />
 			<property name="builtInKitchen" type="boolean" column="built_in_kitchen" />
+
+			<set name="rents" inverse="true">
+				<key column="apartment_id" />
+				<one-to-many class="de.dis.data.Rents" />
+			</set>
+
 		</union-subclass>
 
 
