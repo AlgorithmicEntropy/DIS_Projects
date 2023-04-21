@@ -8,7 +8,7 @@
 
         <!-- Connection settings -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://127.0.0.1:5432</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://127.0.0.1:5432/db</property>
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">postgres</property>
 
@@ -24,9 +24,13 @@
         <property name="hbm2ddl.auto">create</property>
 
         <!-- Annotated entity classes -->
-        <mapping resource="de/dis2023/data/mapping/Person.hbm.xml" />
-        <mapping resource="de/dis2023/data/mapping/EstateAgent.hbm.xml" />
-        <mapping resource="de/dis2023/data/mapping/Estate.hbm.xml" />
+        <mapping resource="de/dis/data/mapping/Person.hbm.xml" />
+        <mapping resource="de/dis/data/mapping/EstateAgent.hbm.xml" />
+        <mapping resource="de/dis/data/mapping/Estate.hbm.xml" />
+        <mapping resource="de/dis/data/mapping/Contract.hbm.xml" />
+        <mapping resource="de/dis/data/mapping/Rents.hbm.xml" />
+        <mapping resource="de/dis/data/mapping/Sells.hbm.xml" />
+
 
     </session-factory>
 </hibernate-configuration>
