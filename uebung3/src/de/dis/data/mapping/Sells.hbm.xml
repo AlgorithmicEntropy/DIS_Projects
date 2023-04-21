@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="de.dis.data.Sells" table="sells">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>
+		<many-to-one name="house" class="de.dis.data.House" column="house_id" not-null="true" lazy="false" />
+		<!-- Theoretisch müsste das one-to-many sein. Dann würde aber Sells
+		die id aus Contracts nutzen, und wir müssten unser Datenmodell umkrempeln.-->
+		<many-to-one name="contract" class="de.dis.data.PurchaseContract" column="contract_id" not-null="true" lazy="false" />
+		<many-to-one name="buyer" class="de.dis.data.Person" column="buyer_id" not-null="true" lazy="false" />
+
+	</class>
+</hibernate-mapping>
