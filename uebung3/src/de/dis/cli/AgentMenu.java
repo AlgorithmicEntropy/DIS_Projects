@@ -54,7 +54,13 @@ public class AgentMenu extends AbstractMenu {
                 case CREATE_ESTATE -> this.addEstate();
                 case DELETE_ESTATE -> {
                     Estate estate = this.showEstateMenu();
-                    service.delete(estate);
+                    if(estate instanceof House && !service.getAllSellsForHouse((House) estate).isEmpty()){
+                        System.out.println("The house is part of a sell and therefore can't be deleted.");
+                    } else if(estate instanceof Apartment && !service.getAllRentsForApartment((Apartment) estate).isEmpty()){
+                        System.out.println("The apartment is part of a rent and therefore can't be deleted.");
+                    } else{
+                        service.delete(estate);
+                    }
                 }
                 case UPDATE_ESTATE -> {
                     var estate = this.showEstateMenu();

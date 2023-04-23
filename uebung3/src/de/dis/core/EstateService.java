@@ -120,6 +120,20 @@ public class EstateService {
 		session.close();
 		return houses;
 	}
+
+	public List<Sells> getAllSellsForHouse(House house){
+		Session session = sessionFactory.openSession();
+		var sells = session.createQuery("from Sells where house.id = :id").setParameter("id", house.getId()).list();
+		session.close();
+		return sells;
+	}
+
+	public List<Sells> getAllRentsForApartment(Apartment apartment){
+		Session session = sessionFactory.openSession();
+		var rents = session.createQuery("from Rents where apartment.id = :id").setParameter("id", apartment.getId()).list();
+		session.close();
+		return rents;
+	}
 	
 	/**
 	 * Find a house with a given ID

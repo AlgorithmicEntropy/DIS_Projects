@@ -59,7 +59,14 @@ public class RootMenu extends AbstractMenu {
     }
 
     private void deleteAgent(EstateAgent agent) {
-        EstateService.getInstance().delete(agent);
+        EstateService service = EstateService.getInstance();
+        if(!service.getAllHousesForEstateAgent(agent).isEmpty()) {
+            System.out.println("The agent has at least one house and therefore can't be deleted.");
+        } else if(!service.getAllApartmentsForEstateAgent(agent).isEmpty()) {
+            System.out.println("The agent has at least one apartment and therefore can't be deleted.");
+        } else{
+            service.delete(agent);
+        }
     }
 
     private void logout() {
