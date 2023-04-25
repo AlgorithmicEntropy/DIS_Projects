@@ -1,0 +1,67 @@
+4.1
+a)
+current: read commited
+supported: all, but read uncommited behaves like read commited in postgressql
+https://www.postgresql.org/docs/current/transaction-iso.html
+
+b)
+CREATE TABLE IF NOT EXISTS sheet4 (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+insert into sheet4 (name) VALUES ('Tom');
+insert into sheet4 (name) VALUES ('Karl');
+insert into sheet4 (name) VALUES ('Karl');
+insert into sheet4 (name) VALUES ('Heinz');
+insert into sheet4 (name) VALUES ('Lisa');
+insert into sheet4 (name) VALUES ('Klaus');
+insert into sheet4 (name) VALUES ('Peter');
+
+c) Select * FROM SHEET4 WHERE ID=1;
+SELECT relation::regclass, mode, granted FROM pg_locks WHERE relation::regclass = ’sheet4’::regclass
+-> relation=sheet4,mode=AccessShareLock,granted=true
+d) SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+SELECT relation::regclass, mode, granted FROM pg_locks WHERE relation::regclass = ’sheet4’::regclass
+->relation=sheet4,mode=AccessShareLock,granted=true
+->relation=sheet4,mode=SIReadLock,granted=true
+
+4.2
+a) 
+SELECT * FROM SHEET4 WHERE ID > 3;
+insert into sheet4 (id, name) values (10, 'Anne');
+-> Insert happens. 
+SELECT * FROM SHEET4 WHERE ID > 3;
+-> New entry is included in the result.
+b)
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SELECT * FROM SHEET4 WHERE ID > 3;
+insert into sheet4 (id, name) values (11, 'Tanja');
+-> Tanja is inserted
+SELECT * FROM SHEET4 WHERE ID > 3;
+-> New entry is not included in the result (connection one)
+SELECT relation::regclass, mode, granted FROM pg_locks WHERE relation::regclass = ’sheet4’::regclass
+-> relation=sheet4,mode=AccessShareLock,granted=true
+SELECT * FROM SHEET4 WHERE ID > 3;
+-> New connection contains the new entry, before the commit and after the commit.
+
+FIXME ANSWER QUESTION ABOUT 2PL!!!!!!!
+-> 2PL = 2 Phase Locking
+-> First getting locks, then returning locks
+
+c)
+-- Ohne autocommit;
+UPDATE SHEET4 SET NAME = 'Marta' WHERE ID = 11;
+-- Mit autocommit
+UPDATE SHEET4 SET NAME = 'Karla' WHERE ID = 3;
+UPDATE SHEET4 SET NAME = 'Martin' WHERE ID = 11;
+-> Transaction is put on hold?!? There is a cancel button now.
+-> since dirty write is always prevented, and there is no read operation following, the isolation level does not matter.
+
+d) commiting an update for a deleted row
+
+e)
+t1: select name from sheet4 where id = 1 for update;
+t2: select name from sheet4 where id = 2 for update;
+t1: update sheet4 set name = 'Karla' where id = 2;
+t2: update sheet4 set name = 'Tomas' where id = 1;
+-> An exception is thrown: "ERROR: deadlock detected".
