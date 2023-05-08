@@ -15,13 +15,13 @@ conn.autocommit = False
 conn2 = new_connection()
 conn2.autocommit = False
 
-runner = ScheduleRunner(conn, conn2)
+runner = ScheduleRunner(conn, conn2, use_locks=True)
 # show isolation level
 # show_isolation_level()
 # change isolation level
 set_isolation(IsolationLevel.READ_COMMITTED)
 # change me to run different schedule
-runner.run(S1)
+runner.run(S2)
 
 conn.close()
 conn2.close()
