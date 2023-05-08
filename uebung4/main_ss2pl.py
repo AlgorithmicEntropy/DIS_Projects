@@ -8,7 +8,8 @@ from reset_db import reset_db
 from runner import ScheduleRunner
 from schedules import S1, S2, S3
 
-async def main():
+
+def main():
     # reset db
     reset_db()
 
@@ -29,13 +30,11 @@ async def main():
     runner = ScheduleRunner(conn, conn2, use_locks=True)
 
     # change me to run different schedule
-    await runner.run(S1)
-
-    show_isolation_level(conn)
+    runner.run(S2)
 
     conn.close()
     conn2.close()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

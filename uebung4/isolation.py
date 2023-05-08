@@ -1,7 +1,5 @@
 from enum import Enum
 
-from connections import new_connection
-
 
 class IsolationLevel(Enum):
     # postgres does not support read uncommitted
