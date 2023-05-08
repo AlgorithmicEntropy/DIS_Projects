@@ -1,3 +1,5 @@
+import asyncio
+
 import psycopg2
 
 from connections import new_connection
@@ -6,22 +8,35 @@ from reset_db import reset_db
 from runner import ScheduleRunner
 from schedules import S1, S2, S3
 
-# reset db
-reset_db()
 
-conn = new_connection()
-conn.autocommit = False
+async def main():
+    # reset db
+    reset_db()
 
-conn2 = new_connection()
-conn2.autocommit = False
+    conn = new_connection()
+    conn.autocommit = False
 
-runner = ScheduleRunner(conn, conn2)
-# show isolation level
-# show_isolation_level()
-# change isolation level
-set_isolation(IsolationLevel.READ_COMMITTED)
-# change me to run different schedule
-runner.run(S1)
+    conn2 = new_connection()
+    conn2.autocommit = False
 
-conn.close()
-conn2.close()
+    isolation_level = IsolationLevel.READ_COMMITTED
+
+    # show isolation level
+    # show_isolation_level()
+    # change isolation level
+    set_isolation(conn, isolation_level)
+    set_isolation(conn2, isolation_level)
+
+    runner = ScheduleRunner(conn, conn2)
+
+    # change me to run different schedule
+    await runner.run(S1)
+
+    show_isolation_level(conn)
+
+    conn.close()
+    conn2.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

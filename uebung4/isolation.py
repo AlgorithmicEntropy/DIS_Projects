@@ -10,17 +10,14 @@ class IsolationLevel(Enum):
     SERIALIZABLE = "SERIALIZABLE"
 
 
-def show_isolation_level():
-    conn = new_connection()
+def show_isolation_level(conn):
     cur = conn.cursor()
     cur.execute("SHOW transaction_isolation;")
     print(f"Current isolation level: {cur.fetchone()[0]}")
     cur.close()
-    conn.close()
 
 
-def set_isolation(level: IsolationLevel):
-    conn = new_connection()
+def set_isolation(conn, level: IsolationLevel):
     cur = conn.cursor()
     level = level.value
     if isinstance(level, tuple):
@@ -29,4 +26,3 @@ def set_isolation(level: IsolationLevel):
     cur.execute("SHOW transaction_isolation;")
     print(f"Current isolation level: {cur.fetchone()[0]}")
     cur.close()
-    conn.close()
