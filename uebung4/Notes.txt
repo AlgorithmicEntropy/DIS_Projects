@@ -65,3 +65,7 @@ t2: select name from sheet4 where id = 2 for update;
 t1: update sheet4 set name = 'Karla' where id = 2;
 t2: update sheet4 set name = 'Tomas' where id = 1;
 -> An exception is thrown: "ERROR: deadlock detected".
+
+4.3b
+- S2 READ COMMITTED: no_locks: r1(x) -> Tom, r1(x) -> Tina, with_locks: r1(x) -> Tom, r1(x) -> Tom
+-> T2 get serialized behind T1 because of the read lock
