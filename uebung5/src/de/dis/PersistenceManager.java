@@ -1,6 +1,9 @@
+package de.dis;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,11 +19,14 @@ public class PersistenceManager {
 
     /* FIXME CB: What do we actually need here? I am a little bit confused. Not sure what key and value need to be. pageId and data?
         But where does that leave our transactionId? */
-    private Hashtable<Integer, String> buffer = new Hashtable<>();
+    private final Hashtable<Integer, DbOperation> buffer = new Hashtable<>();
+
+    private final ArrayList<Integer> runningTransactions = new ArrayList<>();
+    private final ArrayList<Integer> committedTransactions = new ArrayList<>();
 
 
     private PersistenceManager() {
-        System.out.println("PersistenceManager was created.");
+        System.out.println("de.dis.PersistenceManager was created.");
     }
 
     /**
@@ -30,85 +36,58 @@ public class PersistenceManager {
         return manager;
     }
 
-    public int beginTransaction() {
+    public synchronized int beginTransaction() {
         transactionId++;
+
+        runningTransactions.add(transactionId);
+
         System.out.println("Transaction " + transactionId + " started.");
         return transactionId;
     }
 
-    public void commit(int taid) {
-        // FIXME CB: Implement commit? Do we only log that and save it persistently with the next write?!?
+    public synchronized void commit(int taid) {
+        runningTransactions.remove((Integer) taid);
+        committedTransactions.add(taid);
 
-        System.out.println("Transaction " + transactionId + " commited.");
+        System.out.println("Transaction " + taid + " commited.");
 
         LogEntry eotLogEntry = LogEntry.createEotLogEntry(lsn++, taid);
         eotLogEntry.writeLogEntry(getLogFile());
     }
 
-    public void write(int taid, int pageId, String data) {
+    public synchronized void write(int taid, int pageId, String data) {
         // FIXME CB: Is that correct?
-        buffer.put(pageId, data);
+        buffer.put(pageId, new DbOperation(taid, lsn, data));
 
         System.out.println(MessageFormat.format("adding to buffer: taid={0}, pageId={1}, data={2}", taid, pageId, data));
 
-        LogEntry dataLogEntry = LogEntry.createDataLogEntry(lsn++, taid, pageId, data);
+        LogEntry dataLogEntry = LogEntry.createDataLogEntry(lsn, taid, pageId, data);
         dataLogEntry.writeLogEntry(getLogFile());
+        lsn++;
 
         // Write buffer data of committed transactions to storage if the buffer contains more than five data sets
         if (buffer.size() > 5) {
             writeBufferToPersistentStorage();
-
         }
     }
 
     private void writeBufferToPersistentStorage() {
-        // FIXME CB: Is that the way to go to find out which transactions we already committed?
-        Map<Integer, Integer> committedTAs = getCommittedTransactions();
-
-        for (Object entry : buffer.entrySet()) {
-            // FIXME CB: read page-ID, TA-ID and data from entry
-            int pageId = -1;
-            int taId = -1;
-            String data = "FIXME";
-
-            // FIXME CB: check entry against committed TAs
-            if (false // committedTAs.contains(entry.taid)
-             ) {
-
-                int lsn = committedTAs.get(taId);
-                File pageFile = getPageFileById(pageId);
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(pageFile, false))) {
-                    writer.write(lsn);
-                    writer.write(SEPARATOR);
-                    writer.write(data);
-                } catch (IOException e) {
-                    throw new RuntimeException("Error on writing data to persistent storage.", e);
-                }
+        ArrayList<Integer> writtenPages = new ArrayList<>();
+        for (Map.Entry<Integer, DbOperation> entry: buffer.entrySet()) {
+            int pageId = entry.getKey();
+            DbOperation op = entry.getValue();
+            if (committedTransactions.contains(op.getTransactionID())) {
+                new PageFile(pageId).save(op.getLsn(), op.getData());
+                writtenPages.add(pageId);
             }
         }
-    }
-
-
-
-
-    /**
-     * Returns the page file for the given page id. If the file does not yet exist, the file, and it's parent directories are created.
-     *
-     * @param id Page ID
-     * @return page file
-     */
-    public File getPageFileById(int id) {
-        File pageFile = new File("files" + File.separator + "Page_" + id + ".txt");
-        if (!pageFile.exists()) {
-            try {
-                pageFile.getParentFile().mkdirs();
-                pageFile.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException("Error on creating page file.", e);
-            }
+        for (int pageId : writtenPages) {
+            buffer.remove(pageId);
         }
-        return pageFile;
+        committedTransactions.clear();
+        System.out.printf("Buffer written to persistent storage with %s pages.%n", writtenPages.size());
     }
+
 
     /**
      * Returns the log file. If the file does not yet exist, the file, and it's parent directories are created.
@@ -117,13 +96,11 @@ public class PersistenceManager {
      */
     public static File getLogFile() {
         File logFile = new File("Log.txt");
-        if (!logFile.exists()) {
-            try {
-                logFile.getParentFile().mkdirs();
-                logFile.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException("Error on creating log file.", e);
-            }
+        // createNewFile checks if exists or not
+        try {
+            logFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return logFile;
     }
@@ -141,4 +118,18 @@ public class PersistenceManager {
         }
     }
 
+    public void resetDB() {
+        // clear logs
+        File logFile = new File("Log.txt");
+        logFile.delete();
+        var dir = new File("files");
+        try {
+            var files = dir.listFiles();
+            for(File file: files)
+                if (!file.isDirectory())
+                    file.delete();
+        } catch (NullPointerException e) {
+            // ignore
+        }
+    }
 }

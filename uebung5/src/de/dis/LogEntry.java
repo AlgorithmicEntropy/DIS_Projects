@@ -1,3 +1,5 @@
+package de.dis;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -40,8 +42,8 @@ public class LogEntry {
         LogEntry logEntry = new LogEntry();
         String[] splitEntry = logLine.split(PersistenceManager.SEPARATOR);
 
-        logEntry.lsn = Integer.valueOf(splitEntry[0]);
-        logEntry.taId = Integer.valueOf(splitEntry[1]);
+        logEntry.lsn = Integer.parseInt(splitEntry[0]);
+        logEntry.taId = Integer.parseInt(splitEntry[1]);
 
         if(splitEntry.length == 3){
             logEntry.eot = true;
@@ -66,8 +68,8 @@ public class LogEntry {
     public void writeLogEntry(File logFile) {
         // Add a new line to the log file to log the LSN and the given values
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true))) {
-            writer.newLine();
             writer.write(this.toLogString());
+            writer.newLine();
         } catch (IOException e) {
             throw new RuntimeException("Error on writing log entry.", e);
         }
