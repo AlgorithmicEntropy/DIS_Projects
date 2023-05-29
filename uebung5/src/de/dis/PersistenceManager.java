@@ -1,12 +1,11 @@
 package de.dis;
 
-import java.io.*;
-import java.nio.file.Files;
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class PersistenceManager {
 
@@ -15,10 +14,7 @@ public class PersistenceManager {
     public static final String SEPARATOR = ";";
 
     private int transactionId = 0;
-    /* // FIXME: 29.05.2023 Die LSN wird nicht konsistent hochgezählt:
-            beim Write wird erst mit der bestehenden LSN geloggt und dann hochgezählt,
-            beim Commit aber wiederum wird erst hochgezählt, und dann geloggt.
-            Das sollten wir noch glattziehen. Die Frage ist: Welches ist besser?*/
+
     private int lsn = 0;
 
     /**
@@ -51,17 +47,12 @@ public class PersistenceManager {
     }
 
     public synchronized void commit(int taid) {
-        /* FIXME: 29.05.2023 Shouldn't we FIRST log, then establish that the commit happened?
-            Otherwise if there is an error while logging, there is a discrepancy.
-            With the remove/add there is not much that can go wrong. */
+        LogEntry eotLogEntry = LogEntry.createEotLogEntry(lsn++, taid);
+        eotLogEntry.writeLogEntry(getLogFile());
 
         runningTransactions.remove((Integer) taid);
         committedTransactions.add(taid);
-
         System.out.println("Transaction " + taid + " committed.");
-
-        LogEntry eotLogEntry = LogEntry.createEotLogEntry(lsn++, taid);
-        eotLogEntry.writeLogEntry(getLogFile());
     }
 
     public synchronized void write(int taid, int pageId, String data) {
