@@ -15,10 +15,15 @@ public class PersistenceManager {
     public static final String SEPARATOR = ";";
 
     private int transactionId = 0;
+    /* // FIXME: 29.05.2023 Die LSN wird nicht konsistent hochgezählt:
+            beim Write wird erst mit der bestehenden LSN geloggt und dann hochgezählt,
+            beim Commit aber wiederum wird erst hochgezählt, und dann geloggt.
+            Das sollten wir noch glattziehen. Die Frage ist: Welches ist besser?*/
     private int lsn = 0;
 
-    /* FIXME CB: What do we actually need here? I am a little bit confused. Not sure what key and value need to be. pageId and data?
-        But where does that leave our transactionId? */
+    /**
+     * Buffer. Holds the pageId as keys and database operation as values.
+     */
     private final Hashtable<Integer, DbOperation> buffer = new Hashtable<>();
 
     private final ArrayList<Integer> runningTransactions = new ArrayList<>();
@@ -46,17 +51,20 @@ public class PersistenceManager {
     }
 
     public synchronized void commit(int taid) {
+        /* FIXME: 29.05.2023 Shouldn't we FIRST log, then establish that the commit happened?
+            Otherwise if there is an error while logging, there is a discrepancy.
+            With the remove/add there is not much that can go wrong. */
+
         runningTransactions.remove((Integer) taid);
         committedTransactions.add(taid);
 
-        System.out.println("Transaction " + taid + " commited.");
+        System.out.println("Transaction " + taid + " committed.");
 
         LogEntry eotLogEntry = LogEntry.createEotLogEntry(lsn++, taid);
         eotLogEntry.writeLogEntry(getLogFile());
     }
 
     public synchronized void write(int taid, int pageId, String data) {
-        // FIXME CB: Is that correct?
         buffer.put(pageId, new DbOperation(taid, lsn, data));
 
         System.out.println(MessageFormat.format("adding to buffer: taid={0}, pageId={1}, data={2}", taid, pageId, data));
@@ -73,7 +81,7 @@ public class PersistenceManager {
 
     private void writeBufferToPersistentStorage() {
         ArrayList<Integer> writtenPages = new ArrayList<>();
-        for (Map.Entry<Integer, DbOperation> entry: buffer.entrySet()) {
+        for (Map.Entry<Integer, DbOperation> entry : buffer.entrySet()) {
             int pageId = entry.getKey();
             DbOperation op = entry.getValue();
             if (committedTransactions.contains(op.getTransactionID())) {
@@ -105,19 +113,6 @@ public class PersistenceManager {
         return logFile;
     }
 
-    /**
-     * Reads the transactions that are already committed from the log file.
-     * @return Map containing the already committed transactions, with the TA-ID as key and the last LSN of the TA as value.
-     */
-    public static Map<Integer, Integer> getCommittedTransactions() {
-        try {
-            return Files.readAllLines(getLogFile().toPath()).stream().map(LogEntry::getLogEntryFromLogLine).filter(LogEntry::isEot)
-                    .collect(Collectors.toMap(LogEntry::getTaId, LogEntry::getLsn));
-        } catch (IOException e) {
-            throw new RuntimeException("Error on reading log file.", e);
-        }
-    }
-
     public void resetDB() {
         // clear logs
         File logFile = new File("Log.txt");
@@ -125,7 +120,7 @@ public class PersistenceManager {
         var dir = new File("files");
         try {
             var files = dir.listFiles();
-            for(File file: files)
+            for (File file : files)
                 if (!file.isDirectory())
                     file.delete();
         } catch (NullPointerException e) {

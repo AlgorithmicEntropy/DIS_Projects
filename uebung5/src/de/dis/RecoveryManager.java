@@ -37,12 +37,11 @@ public class RecoveryManager {
         if (logEntry.isEot()) {
             // commit was used to determine winner transactions, but did not modify the database
             // -> nothing to redo for this log entry
-            System.out.printf("Nothing to redo COMMIT for log entry %s%n", logEntry.getLsn());
+            System.out.printf("Nothing to redo (COMMIT) for log entry %s%n", logEntry.getLsn());
             return;
         }
 
         // Find page file for the page of the current log entry
-        // File pagefile = manager.getPageFileById(logEntry.getPageId());
         PageFile pagefile = new PageFile(logEntry.getPageId());
         List<String> pageLines = pagefile.getContent();
 
@@ -52,6 +51,8 @@ public class RecoveryManager {
             // and can therefore be written to persistent storage -> no need to buffer
             pagefile.save(logEntry.getLsn(), logEntry.getData());
             System.out.printf("Redo for log entry %s, pageID: %s, data: %s%n", logEntry.getLsn(), logEntry.getPageId(), logEntry.getData());
+        } else {
+            System.out.printf("Nothing to redo for log entry %s since page lsn is higher than / equal to log entry lsn.%n", logEntry.getLsn());
         }
     }
 }

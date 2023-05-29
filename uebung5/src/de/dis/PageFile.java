@@ -26,10 +26,10 @@ public class PageFile {
     /**
      * Save data to page file
      */
-    public void save(Integer lsn, String data) {
+    public void save(int lsn, String data) {
         try {
             FileWriter fw = new FileWriter(this.file);
-            fw.write(String.format("%s;%s", lsn, data));
+            fw.write(lsn + PersistenceManager.SEPARATOR + data);
             fw.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
