@@ -1,5 +1,18 @@
 package logic;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.*;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.model.GridFSFile;
+import com.mongodb.client.gridfs.model.GridFSUploadOptions;
+import com.mongodb.client.model.*;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import twitter4j.GeoLocation;
+import twitter4j.Status;
+import twitter4j.TwitterObjectFactory;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -7,32 +20,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.mongodb.client.model.*;
-import org.bson.Document;
-import org.bson.types.ObjectId;
-
-import twitter4j.GeoLocation;
-import twitter4j.Status;
-import twitter4j.TwitterObjectFactory;
-
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoIterable;
-import com.mongodb.client.gridfs.GridFSBucket;
-import com.mongodb.client.gridfs.GridFSBuckets;
-import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.client.gridfs.model.GridFSUploadOptions;
-
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Sorts.orderBy;
-
 import static logic.Movie.*;
-import static logic.Tweet.*;
+import static logic.Tweet.COL_GEOTAGGED;
 
 /**
  * This class holds the data/backend logic for the Movie Web-App. It uses
@@ -54,7 +45,7 @@ public class MovieService extends MovieServiceBase {
      */
     public MovieService() {
         // see for example https://mongodb.github.io/mongo-java-driver/3.12/driver/tutorials/
-        mongo = MongoClients.create();
+        mongo = MongoClients.create("mongodb://root:password@localhost");
         // Select database "imdb"
         db = mongo.getDatabase("imbd");
         // Create a GriFS FileSystem Object using the db
@@ -82,9 +73,8 @@ public class MovieService extends MovieServiceBase {
      * @return the matching DBObject
      */
     public Document findMovieByTitle(String title) {
-        // exclude no field, so that every field is included (?) FIXME cb see if that works
-        Document result = movies.find(eq(COL_TITLE, title)).projection(Projections.exclude()).first();
-        return result;
+        // exclude no field, so that every field is included
+        return movies.find(eq(COL_TITLE, title)).first();
     }
 
 
@@ -114,9 +104,9 @@ public class MovieService extends MovieServiceBase {
      */
     public FindIterable<Document> getByGenre(String genreList, int limit) {
         List<String> genres = Arrays.asList(genreList.split(","));
-
-        FindIterable<Document> result = movies.find(all(COL_GENRE, genres));
-        return result;
+        // strip leading and trailing spaces from each genre
+        genres.replaceAll(String::trim);
+        return movies.find(all(COL_GENRE, genres)).limit(limit);
     }
 
     /**
@@ -131,8 +121,7 @@ public class MovieService extends MovieServiceBase {
      */
     public FindIterable<Document> searchByPrefix(String titlePrefix, int limit) {
         Document prefixQuery = new Document(COL_TITLE, Pattern.compile("^" + titlePrefix + ".*"));
-        FindIterable<Document> result = movies.find(prefixQuery).projection(new Document(COL_TITLE, true)).limit(limit);
-        return result;
+        return movies.find(prefixQuery).limit(limit);
     }
 
     /**
@@ -186,7 +175,7 @@ public class MovieService extends MovieServiceBase {
      * @param limit   maximum number of records to be returned
      * @return the FindIterable for the query
      */
-    public FindIterable getByTweetsKeywordRegex(String keyword, int limit) {
+    public FindIterable<Document> getByTweetsKeywordRegex(String keyword, int limit) {
         FindIterable<Document> result = movies.find(Filters.regex(COL_TWEETS_TEXT, ".*" + keyword + ".*", "i")).limit(limit);
         return result;
     }
@@ -203,13 +192,7 @@ public class MovieService extends MovieServiceBase {
      * @return a List of Objects returned by the FTS query
      */
     public FindIterable<Document> searchTweets(String query) {
-        // Create a text index on the "text" property of tweets
-        tweets.createIndex(new Document(COL_TEXT, INDEX_TYPE_TEXT).append(COL_USERNAME, INDEX_TYPE_TEXT));
-
-        // FIXME cb test if that works as intended
-        FindIterable<Document> result = tweets.find(where(query));
-
-        return result;
+        return tweets.find(text(query));
     }
 
     /**
@@ -399,6 +382,9 @@ public class MovieService extends MovieServiceBase {
         movies.createIndex(Indexes.ascending("rating"));
         movies.createIndex(Indexes.ascending("votes"));
         movies.createIndex(Indexes.ascending("tweets.coordinates"));
+
+        // Index tweets.text for full text search
+        tweets.createIndex(Indexes.text("text"));
     }
 
     public void upsertMovie(Document movie) {

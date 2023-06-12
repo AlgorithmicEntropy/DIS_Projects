@@ -175,7 +175,6 @@ public class RestServer {
 			@Override
 			public Object getData(HttpServletRequest request) {
 				String query = request.getParameter("query");
-				System.out.println(query);
 				String type = request.getParameter("type");
 				if (type == null)
 					type = "";
