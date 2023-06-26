@@ -18,7 +18,7 @@ public class SaleData {
     public Integer shopID;
     public Integer articleID;
 
-    public static SaleData parseSaleData(String saleEntry) {
+    public static SaleData parseSaleData(String saleEntry) throws NumberFormatException {
 
         String[] values = saleEntry.split(";");
 

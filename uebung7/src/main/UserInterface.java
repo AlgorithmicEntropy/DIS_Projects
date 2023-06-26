@@ -12,6 +12,10 @@ import java.util.Map;
 
 public class UserInterface {
 
+    public static void main(String[] args) throws SQLException {
+        printProductTable(Granulates.GEO.CITY, Granulates.TIME.QUARTER, Granulates.PRODUCT.PRODUCT_GROUP);
+    }
+
     /**
      * Produces output that the manager can use.
      * The desired granularity level
@@ -29,8 +33,7 @@ public class UserInterface {
      * @throws java.sql.SQLException
      */
     public static void printProductTable(Granulates.GEO geo, Granulates.TIME time, Granulates.PRODUCT productGranulate) throws SQLException {
-        // FIXME CB start connection
-        Connection connectionDW = null;
+        Connection connectionDW = ConnectionManager.getInstance().getDwCon();
 
         // First: Find the products to build the columns.
         List<Product> products = ReadDW.findAllProducts(connectionDW, productGranulate);
@@ -48,14 +51,14 @@ public class UserInterface {
             //Add them to  the ginormous Map
             for(Sale sale : sales){
                 // FIXME CB read the right attribute of the sale
-            List<Sale> geoList = mapStuff.get(product).get(sale.geoName);
+            List<Sale> geoList = mapStuff.get(product).get(sale); // geoName
             if(geoList == null){
                 geoList = new ArrayList<>();
             }
             geoList.add(sale);
 
             // FIXME CB Not sure if we need that next line
-                mapStuff.get(product).put(sale.geoName, geoList);
+                // mapStuff.get(product).put(sale.geoName, geoList);
 
             }
                    }

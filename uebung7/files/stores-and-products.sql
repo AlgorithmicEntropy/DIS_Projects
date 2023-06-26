@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS Country, Region, City, Shop, Article, ProductGroup, ProductFamily, ProductCategory;
+
+
 CREATE TABLE Country (
   CountryID int NOT NULL,
   Name varchar(255) NOT NULL,

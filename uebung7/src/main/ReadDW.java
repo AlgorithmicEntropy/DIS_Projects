@@ -34,26 +34,22 @@ public class ReadDW {
 
     public static List<Sale> findAllSalesByProduct(Connection connectionDW, Granulates.PRODUCT productGranulate, Granulates.GEO geoGranulate, Product product) throws SQLException {
         // Find all the products categories/families/groups/articles, depending on the granulate
-        String rawSql = "SELECT SALES.*,  FROM SALES " + getProductJoinsForSales() + " WHERE " + productGranulate.tableName + "ID = ?" ;
-
+        String rawSql = "SELECT SALES.* FROM SALES " + getProductJoinsForSales() + " WHERE " + productGranulate.tableName + "." + productGranulate.tableName + "ID = ?" ;
+        PreparedStatement statement = connectionDW.prepareStatement(rawSql);
 
         // FIXME CB Same join thing for GEO - if that is even the right approach...
 
-        try(PreparedStatement statement = connectionDW.prepareStatement(rawSql)){
-            statement.setInt(1, product.id);
+        statement.setInt(1, product.id);
 
-            List<Sale> sales = new ArrayList<>();
+        List<Sale> sales = new ArrayList<>();
 
-            try(ResultSet resultSet = statement.executeQuery()){
-                while(resultSet.next()){
-                    Sale sale = new Sale();
-                    // FIXME CB fill up the attributes!
-                    // GEO is depending on the geoGranulate. (geoGranulate.tableName + ".name")
-                }
+        try(ResultSet resultSet = statement.executeQuery()){
+            while(resultSet.next()){
+                sales.add(Sale.fromResultSet(resultSet));
+                // GEO is depending on the geoGranulate. (geoGranulate.tableName + ".name")
             }
-
-            return sales;
         }
+        return sales;
     }
 
     private static String getProductJoinsForSales() {

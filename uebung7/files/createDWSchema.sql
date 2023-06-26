@@ -1,4 +1,5 @@
--- FROM stores-and-products
+DROP TABLE IF EXISTS Country, Region, City, Shop, Article, ProductGroup, ProductFamily, ProductCategory, Sales;
+
 CREATE TABLE Country (
   CountryID int NOT NULL,
   Name varchar(255) NOT NULL,
@@ -62,16 +63,15 @@ ALTER TABLE Article ADD CONSTRAINT ArticleID_fk_1 FOREIGN KEY (ProductGroupID) R
 ALTER TABLE ProductGroup ADD CONSTRAINT ProductGroupID_fk_1 FOREIGN KEY (ProductFamilyID) REFERENCES ProductFamily (ProductFamilyID);
 ALTER TABLE ProductFamily ADD CONSTRAINT ProductFamilyID_fk_1 FOREIGN KEY (ProductCategoryID) REFERENCES ProductCategory (ProductCategoryID);
 
--- additional tables for the sales
-CREATE TABLE SALES (
+CREATE TABLE Sales (
     SalesID int NOT NULL,
     SALE_DATE DATE NOT NULL,
     ShopID int NOT NULL,
     ArticleID int NOT NULL,
     Sells int NOT NULL,
-    Revenue MONEY NOT NULL
+    Revenue MONEY NOT NULL,
     PRIMARY KEY (SalesID)
-)
+);
 
-ALTER TABLE SALES ADD CONSTRAINT sales_fk_1 FOREIGN KEY (ShopID) references SHOP (ShopID);
-ALTER TABLE SALES ADD CONSTRAINT sales_fk_2 FOREIGN KEY (ArticleID) references ARTICLE (ArticleID);
+ALTER TABLE Sales ADD CONSTRAINT sales_fk_1 FOREIGN KEY (ShopID) references SHOP (ShopID);
+ALTER TABLE Sales ADD CONSTRAINT sales_fk_2 FOREIGN KEY (ArticleID) references ARTICLE (ArticleID);

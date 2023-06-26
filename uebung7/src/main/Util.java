@@ -56,9 +56,9 @@ public class Util {
         if(!money.matches("[0-9]+(,[0-9]*)?")){
             System.out.println("Value \"" + money + "\" is not a decimal number.");
             // FIXME CB: Was soll hier der default sein? Wie soll damit umgegangen werden?
-            return null;
+            throw new RuntimeException("Value \"" + money + "\" is not a decimal number.");
         }
 
-        return new BigDecimal(money.replace(".", ","));
+        return new BigDecimal(money.replace(",", "."));
     }
 }
