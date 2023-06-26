@@ -1,77 +1,41 @@
-DROP TABLE IF EXISTS Country, Region, City, Shop, Article, ProductGroup, ProductFamily, ProductCategory, Sales;
+DROP TABLE IF EXISTS Geo, Time, Product, Sales;
 
-CREATE TABLE Country (
-  CountryID int NOT NULL,
-  Name varchar(255) NOT NULL,
-  PRIMARY KEY (CountryID)
-);
-
-CREATE TABLE Region (
-  RegionID int NOT NULL ,
-  CountryID int NOT NULL,
-  Name varchar(255) NOT NULL,
-  PRIMARY KEY (RegionID)
-);
-
-CREATE TABLE City (
-  CityID int NOT NULL ,
-  RegionID int NOT NULL,
-  Name varchar(255) NOT NULL,
-  PRIMARY KEY (CityID)
-);
-
-CREATE TABLE Shop (
-  ShopID int NOT NULL ,
-  CityID int NOT NULL,
-  Name varchar(255) NOT NULL,
+CREATE TABLE Geo (
+  ShopID int NOT NULL,
+  ShopName varchar(255) NOT NULL,
+  CityName varchar(255) NOT NULL,
+  RegionName varchar(255) NOT NULL,
+  CountryName varchar(255) NOT NULL,
   PRIMARY KEY (ShopID)
 );
 
-CREATE TABLE Article (
-  ArticleID int NOT NULL ,
-  ProductGroupID int NOT NULL,
-  Name varchar(255) NOT NULL,
+CREATE TABLE Time (
+  Date date NOT NULL,
+  Day int NOT NULL,
+  Month int NOT NULL,
+  Quarter int NOT NULL,
+  Year int NOT NULL,
+  PRIMARY KEY (date)
+);
+
+CREATE TABLE Product (
+  ArticleID int NOT NULL,
+  ArticleName varchar(255) NOT NULL,
+  ProductGroupName varchar(255) NOT NULL,
+  ProductFamilyName varchar(255) NOT NULL,
+  ProductCategoryName varchar(255) NOT NULL,
   Price double precision NOT NULL,
   PRIMARY KEY (ArticleID)
 );
 
-CREATE TABLE ProductGroup (
-  ProductGroupID int NOT NULL ,
-  ProductFamilyID int NOT NULL,
-  Name varchar(255) NOT NULL,
-  PRIMARY KEY (ProductGroupID)
-);
-
-CREATE TABLE ProductFamily (
-  ProductFamilyID int NOT NULL ,
-  ProductCategoryID int NOT NULL,
-  Name varchar(255) NOT NULL,
-  PRIMARY KEY (ProductFamilyID)
-);
-
-CREATE TABLE ProductCategory (
-  ProductCategoryID int NOT NULL ,
-  Name varchar(255) NOT NULL,
-  PRIMARY KEY (ProductCategoryID)
-);
-
-ALTER TABLE Shop ADD CONSTRAINT ShopID_fk_1 FOREIGN KEY (CityID) REFERENCES City (CityID);
-ALTER TABLE City ADD CONSTRAINT CityID_fk_1 FOREIGN KEY (RegionID) REFERENCES Region (RegionID);
-ALTER TABLE Region ADD CONSTRAINT RegionID_fk_1 FOREIGN KEY (CountryID) REFERENCES Country (CountryID);
-
-ALTER TABLE Article ADD CONSTRAINT ArticleID_fk_1 FOREIGN KEY (ProductGroupID) REFERENCES ProductGroup (ProductGroupID);
-ALTER TABLE ProductGroup ADD CONSTRAINT ProductGroupID_fk_1 FOREIGN KEY (ProductFamilyID) REFERENCES ProductFamily (ProductFamilyID);
-ALTER TABLE ProductFamily ADD CONSTRAINT ProductFamilyID_fk_1 FOREIGN KEY (ProductCategoryID) REFERENCES ProductCategory (ProductCategoryID);
-
 CREATE TABLE Sales (
-    SalesID int NOT NULL,
-    SALE_DATE DATE NOT NULL,
-    ShopID int NOT NULL,
-    ArticleID int NOT NULL,
-    Sells int NOT NULL,
-    Revenue MONEY NOT NULL,
-    PRIMARY KEY (SalesID)
+  date date NOT NULL,
+  ShopID int NOT NULL,
+  ArticleID int NOT NULL,
+  Sells int NOT NULL,
+  Revenue DECIMAL NOT NULL,
+  PRIMARY KEY (date, ShopID, ArticleID),
+  FOREIGN KEY (date) REFERENCES Time (date),
+  FOREIGN KEY (ShopID) REFERENCES Geo (ShopID),
+  FOREIGN KEY (ArticleID) REFERENCES Product (ArticleID)
 );
-
-ALTER TABLE Sales ADD CONSTRAINT sales_fk_1 FOREIGN KEY (ShopID) references SHOP (ShopID);
-ALTER TABLE Sales ADD CONSTRAINT sales_fk_2 FOREIGN KEY (ArticleID) references ARTICLE (ArticleID);

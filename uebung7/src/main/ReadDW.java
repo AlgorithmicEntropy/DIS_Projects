@@ -34,12 +34,11 @@ public class ReadDW {
 
     public static List<Sale> findAllSalesByProduct(Connection connectionDW, Granulates.PRODUCT productGranulate, Granulates.GEO geoGranulate, Product product) throws SQLException {
         // Find all the products categories/families/groups/articles, depending on the granulate
-        String rawSql = "SELECT SALES.* FROM SALES " + getProductJoinsForSales() + " WHERE " + productGranulate.tableName + "." + productGranulate.tableName + "ID = ?" ;
+        String rawSql = "SELECT SALES.* FROM SALES " + getProductJoinsForSales() + getGeoJoinsForSales() + " WHERE " + productGranulate.tableName + "." + productGranulate.tableName + "ID = ? AND " + geoGranulate.tableName + "." + geoGranulate.tableName + "ID = ?";
         PreparedStatement statement = connectionDW.prepareStatement(rawSql);
 
-        // FIXME CB Same join thing for GEO - if that is even the right approach...
-
         statement.setInt(1, product.id);
+        //statement.setInt(2, product);
 
         List<Sale> sales = new ArrayList<>();
 
@@ -54,8 +53,16 @@ public class ReadDW {
 
     private static String getProductJoinsForSales() {
         return " LEFT OUTER JOIN ARTICLE ON SALES.ARTICLEID = ARTICLE.ARTICLEID"
-               +  " LEFT OUTER JOIN ProductGroup ON  ARTICLE.ProductGroupID = ProductGroup.ProductGroupID"
-                +  " LEFT OUTER JOIN ProductFamily ON  ProductGroup.ProductFamilyID = ProductFamily.ProductFamilyID"
-                +  " LEFT OUTER JOIN ProductCategory ON  ProductFamily.ProductFamilyID = ProductCategory.ProductCategoryID";
+                + " LEFT OUTER JOIN ProductGroup ON ARTICLE.ProductGroupID = ProductGroup.ProductGroupID"
+                + " LEFT OUTER JOIN ProductFamily ON ProductGroup.ProductFamilyID = ProductFamily.ProductFamilyID"
+                + " LEFT OUTER JOIN ProductCategory ON ProductFamily.ProductFamilyID = ProductCategory.ProductCategoryID";
     }
+
+    private static String getGeoJoinsForSales() {
+        return " LEFT OUTER JOIN SHOP ON SALES.SHOPID = SHOP.SHOPID"
+                + " LEFT OUTER JOIN CITY ON SHOP.CITYID = CITY.CITYID"
+                + " LEFT OUTER JOIN REGION ON CITY.REGIONID = REGION.REGIONID"
+                + " LEFT OUTER JOIN COUNTRY ON REGION.COUNTRYID = COUNTRY.COUNTRYID";
+    }
+
 }

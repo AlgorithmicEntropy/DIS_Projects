@@ -14,10 +14,6 @@ public class SaleData {
     public Integer sold;
     public BigDecimal revenue;
 
-    // Additional data required for the DW (foreign keys)
-    public Integer shopID;
-    public Integer articleID;
-
     public static SaleData parseSaleData(String saleEntry) throws NumberFormatException {
 
         String[] values = saleEntry.split(";");
