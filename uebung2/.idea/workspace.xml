@@ -5,21 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab698545-f522-44f2-a910-466c9fc0aa02" name="Changes" comment="Begin to move menu functions to own class">
-      <change afterPath="$PROJECT_DIR$/../uebung7/src/datasource/GeoDim.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../uebung7/src/datasource/ProductDim.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../uebung7/src/datasource/SalesFact.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../uebung7/src/datasource/TimeDim.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../uebung7/src/etl/ProductETL.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../uebung7/src/etl/ShopETL.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../uebung7/src/etl/db/Article.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../uebung7/src/etl/db/Tuple.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../uebung7/src/datadw/Table.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../uebung7/files/createDWSchema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../uebung7/files/createDWSchema.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../uebung7/src/datadw/Sale.java" beforeDir="false" afterPath="$PROJECT_DIR$/../uebung7/src/datadw/Sale.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../uebung7/src/datasource/GeoData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../uebung7/src/datasource/SaleData.java" beforeDir="false" afterPath="$PROJECT_DIR$/../uebung7/src/datasource/SaleData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../uebung7/src/main/ETL.java" beforeDir="false" afterPath="$PROJECT_DIR$/../uebung7/src/main/ETL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../uebung7/src/main/ReadDW.java" beforeDir="false" afterPath="$PROJECT_DIR$/../uebung7/src/main/ReadDW.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../uebung7/src/main/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/../uebung7/src/main/UserInterface.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
