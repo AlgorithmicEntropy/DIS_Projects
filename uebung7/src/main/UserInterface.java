@@ -34,61 +34,67 @@ public class UserInterface {
      */
     public static void printProductTable(Granulates.GEO geo, Granulates.TIME time, Granulates.PRODUCT productGranulate) throws SQLException {
         Connection connectionDW = ConnectionManager.getInstance().getDwCon();
+        String sql = "Select g."+ geo.tableName + ", t." + time.tableName + ", p." + productGranulate.tableName +
+                ", SUM(s.sells) as total_sells FROM sales s JOIN Time t ON s.date = t.date " +
+                "JOIN Geo g ON s.ShopID = g.ShopID " +
+                "JOIN product p ON s.articleid = p.articleid " +
+                "GROUP BY t." + time.tableName + ", g." + geo.tableName + ", p." + productGranulate.tableName;
+        var statement = connectionDW.prepareStatement(sql);
+        var resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3) + " " + resultSet.getInt(4));
+        }
+    }
 
-        // First: Find the products to build the columns.
-        List<Product> products = ReadDW.findAllProducts(connectionDW, productGranulate);
+    private void PrintTable(Granulates.GEO geo, Granulates.TIME time, Granulates.PRODUCT productGranulate) {
+        var geos = GetGeos(geo);
+        var times = GetTimes(time);
+        var products = GetProducts(productGranulate);
 
-        // Map the product to its geo-Values and their sales
-        Map<Product, Map<String, List<Sale>>> mapStuff = new HashMap<>();
+        // Header
+        System.out.println();
 
-        products.forEach(p -> mapStuff.put(p, null));
+    }
 
-        // Then find the sales for each Product
-        for(Product product : products){
-
-            List<Sale> sales = ReadDW.findAllSalesByProduct(connectionDW, productGranulate, geo,  product);
-
-            //Add them to  the ginormous Map
-            for(Sale sale : sales){
-                // FIXME CB read the right attribute of the sale
-            List<Sale> geoList = mapStuff.get(product).get(sale); // geoName
-            if(geoList == null){
-                geoList = new ArrayList<>();
+    private List<String> GetGeos(Granulates.GEO geo) {
+        var geos = new ArrayList<String>();
+        var sql = "SELECT " + geo.tableName + " FROM geo";
+        try (var statement = ConnectionManager.getInstance().getDwCon().prepareStatement(sql)) {
+            var resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                geos.add(resultSet.getString(1));
             }
-            geoList.add(sale);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return geos;
+    }
 
-            // FIXME CB Not sure if we need that next line
-                // mapStuff.get(product).put(sale.geoName, geoList);
-
+    private List<String> GetProducts(Granulates.PRODUCT product) {
+        var products = new ArrayList<String>();
+        var sql = "SELECT " + product.tableName + " FROM product";
+        try (var statement = ConnectionManager.getInstance().getDwCon().prepareStatement(sql)) {
+            var resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                products.add(resultSet.getString(1));
             }
-                   }
-
-        // FIXME CB Then do the time grouping and compute the totals for each time group
-
-        // FIXME CB and then SOMEHOW compute the total per line ...
-
-        // FIXME CB and then do the drawing :)
-        // Irgendwie so, dass die Geo-Spalte nicht hochkannt ist sondern einfach in jeder Zeile den Wert drin hat?
-        // Man kann da bestimmt auch rumwurschteln dass dann der Strich drunter leer bleibt sodass man nur einmal schreiben muss.
-
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return products;
     }
 
-    private static final int PRODUCT_COL_WIDTH = 10;
-    private static final int GROUP_COL_WIDTH = 15;
-
-    private String prepareStringForFormat(String original, int length) {
-        return "%-" + length + "s";
+    private List<String> GetTimes(Granulates.TIME time) {
+        var times = new ArrayList<String>();
+        var sql = "SELECT " + time.tableName + " FROM time";
+        try (var statement = ConnectionManager.getInstance().getDwCon().prepareStatement(sql)) {
+            var resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                times.add(resultSet.getString(1));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return times;
     }
-
-    private String getRowSeparator(int numberOfProducts) {
-        // First Column needs to be for the group attribute
-        return "+"+"-".repeat(GROUP_COL_WIDTH) + "+"
-                // Then a column for each product
-                + ("-".repeat(PRODUCT_COL_WIDTH) + "+").repeat(numberOfProducts)
-                // then a column for the total
-                + "-".repeat(10) + "+";
-    }
-
-
-
 }

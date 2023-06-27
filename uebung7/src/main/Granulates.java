@@ -3,7 +3,7 @@ package main;
 public class Granulates {
 
     public static enum GEO {
-        COUNTRY("country"), REGION("region"), CITY("city"), SHOP("shop");
+        COUNTRY("countryname"), REGION("regionname"), CITY("cityname"), SHOP("shopname");
         public String tableName;
 
         private GEO(String tableName) {
@@ -21,7 +21,7 @@ public class Granulates {
     }
 
     public static enum PRODUCT {
-        PRODUCT_CATEGORY("ProductCategory"), PRODUCT_FAMILY("ProductFamily"), PRODUCT_GROUP("ProductGroup"), ARTICLE("Article");
+        PRODUCT_CATEGORY("productcategoryname"), PRODUCT_FAMILY("productfamilyname"), PRODUCT_GROUP("productgroupname"), ARTICLE("articlename");
         public String tableName;
 
         private PRODUCT(String geo) {
