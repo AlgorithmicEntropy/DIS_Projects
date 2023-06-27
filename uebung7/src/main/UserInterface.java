@@ -14,7 +14,7 @@ import java.util.Map;
 public class UserInterface {
 
     public static void main(String[] args) throws SQLException {
-        printProductTable(Granulates.GEO.CITY, Granulates.TIME.MONTH, Granulates.PRODUCT.PRODUCT_GROUP);
+        printProductTable(Granulates.GEO.CITY, Granulates.TIME.QUARTER, Granulates.PRODUCT.PRODUCT_FAMILY);
     }
 
     /**

@@ -42,10 +42,12 @@ public class Table {
         var rowBuilder = new StringBuilder();
 
         // header
-        int geo_col_l = 4;
+        // get length for geo column
+        int geo_col_l = (int)Math.ceil((double) geos.stream().mapToInt(String::length).max().orElse(0) / 4) + 1;
+        int sales_col_l = ((times.get(0).length() + time.tableName.length()) / 4);
         System.out.print("|");
         System.out.print("\t".repeat(geo_col_l));
-        System.out.print("|\tsales\t\t");
+        System.out.print("|\tsales" + "\t".repeat(sales_col_l+1));
         for (var p: products) {
             System.out.print("|\t"+p+"\t");
         }
@@ -67,11 +69,14 @@ public class Table {
                 }
                 var rowMap = BuildRowMap(g, t);
 
-                rowBuilder.append("|\t").append(time.tableName).append(" ").append(t).append("\t");
+                rowBuilder.append("|\t").append(time.tableName).append(" ").append(t);
+                // padding
+                rowBuilder.append(" ".repeat(Math.max(0, (time.tableName.length() + t.length()) - sales_col_l)));
                 for (var p : products) {
-                    rowBuilder.append("|\t").append(rowMap.get(p));
+                    var val = rowMap.getOrDefault(p, 0);
+                    rowBuilder.append("|\t").append(val);
                     // padding
-                    rowBuilder.append(" ".repeat(Math.max(0, colMap.get(p) - rowMap.get(p).toString().length())));
+                    rowBuilder.append(" ".repeat(Math.max(0, colMap.get(p) - val.toString().length())));
                     rowBuilder.append("\t");
                 }
                 System.out.println(rowBuilder);
@@ -84,9 +89,10 @@ public class Table {
             rowBuilder.append("|");
             rowBuilder.append("\ttotal\t\t");
             for (var p : products) {
-                rowBuilder.append("|\t").append(geoTotals.get(p));
+                var val = geoTotals.getOrDefault(p, 0);
+                rowBuilder.append("|\t").append(val);
                 // padding
-                rowBuilder.append(" ".repeat(Math.max(0, colMap.get(p) - geoTotals.get(p).toString().length())));
+                rowBuilder.append(" ".repeat(Math.max(0, colMap.get(p) - val.toString().length())));
                 rowBuilder.append("\t");
             }
             System.out.println(rowBuilder);
@@ -100,9 +106,10 @@ public class Table {
         rowBuilder.append("|");
         rowBuilder.append("\ttotal\t\t");
         for (var p : products) {
-            rowBuilder.append("|\t").append(totals.get(p));
+            var val = totals.getOrDefault(p, 0);
+            rowBuilder.append("|\t").append(val);
             // padding
-            rowBuilder.append(" ".repeat(Math.max(0, colMap.get(p) - totals.get(p).toString().length())));
+            rowBuilder.append(" ".repeat(Math.max(0, colMap.get(p) - val.toString().length())));
             rowBuilder.append("\t");
         }
         System.out.println(rowBuilder);
@@ -200,7 +207,7 @@ public class Table {
 
     private List<String> GetGeos(Granulates.GEO geo) {
         var geos = new ArrayList<String>();
-        var sql = "SELECT DISTINCT " + geo.tableName + " FROM geo";
+        var sql = "SELECT DISTINCT " + geo.tableName + " FROM geo ORDER BY " + geo.tableName + " ASC";
         try (var statement = ConnectionManager.getInstance().getDwCon().prepareStatement(sql)) {
             var resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -214,7 +221,7 @@ public class Table {
 
     private List<String> GetProducts(Granulates.PRODUCT product) {
         var products = new ArrayList<String>();
-        var sql = "SELECT DISTINCT " + product.tableName + " FROM product";
+        var sql = "SELECT DISTINCT " + product.tableName + " FROM product ORDER BY " + product.tableName + " ASC";
         try (var statement = ConnectionManager.getInstance().getDwCon().prepareStatement(sql)) {
             var resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -228,7 +235,7 @@ public class Table {
 
     private List<String> GetTimes(Granulates.TIME time) {
         var times = new ArrayList<String>();
-        var sql = "SELECT DISTINCT " + time.tableName + " FROM time";
+        var sql = "SELECT DISTINCT " + time.tableName + " FROM time ORDER BY " + time.tableName + " ASC";
         try (var statement = ConnectionManager.getInstance().getDwCon().prepareStatement(sql)) {
             var resultSet = statement.executeQuery();
             while (resultSet.next()) {

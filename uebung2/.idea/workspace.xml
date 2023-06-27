@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab698545-f522-44f2-a910-466c9fc0aa02" name="Changes" comment="Begin to move menu functions to own class">
-      <change afterPath="$PROJECT_DIR$/../uebung7/src/datadw/Table.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../uebung7/src/datadw/Table.java" beforeDir="false" afterPath="$PROJECT_DIR$/../uebung7/src/datadw/Table.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../uebung7/src/main/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/../uebung7/src/main/UserInterface.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
